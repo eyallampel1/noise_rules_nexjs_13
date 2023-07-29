@@ -1,12 +1,21 @@
-"use client";
 import React, { useState } from "react";
 import axios from "axios";
 import Button from "@mui/material/Button";
-import { Input } from "@mui/material";
-import TextField from "@mui/material/TextField";
+import {
+  Input,
+  Table,
+  TableBody,
+  TableCell,
+  TableContainer,
+  TableHead,
+  TableRow,
+  Select,
+  MenuItem,
+} from "@mui/material";
 
 function FileUpload() {
   const [file, setFile] = useState(null);
+  const [serverResponse, setServerResponse] = useState(null);
 
   const onFileChange = (event) => {
     setFile(event.target.files[0]);
@@ -16,10 +25,12 @@ function FileUpload() {
     const formData = new FormData();
     formData.append("file", file);
 
-    // send the formData object to the server via axios
     axios
       .post("http://localhost:4900/upload", formData)
-      .then((response) => console.log(response))
+      .then((response) => {
+        console.log(response);
+        setServerResponse(response.data.result);
+      })
       .catch((error) => console.log(error));
   };
 
@@ -29,6 +40,37 @@ function FileUpload() {
       <Button variant="contained" onClick={onFileUpload}>
         Upload
       </Button>
+      <TableContainer>
+        <Table>
+          <TableHead>
+            <TableRow>
+              <TableCell>Constraint Class</TableCell>
+              <TableCell>In Class Noise Rule</TableCell>
+              <TableCell>Out of Class Noise Rule</TableCell>
+            </TableRow>
+          </TableHead>
+          <TableBody>
+            {serverResponse &&
+              serverResponse.map((item, index) => (
+                <TableRow key={index}>
+                  <TableCell>{item.constraintClassName}</TableCell>
+                  <TableCell>
+                    <Select>
+                      <MenuItem value={10}>Option 1</MenuItem>
+                      <MenuItem value={20}>Option 2</MenuItem>
+                    </Select>
+                  </TableCell>
+                  <TableCell>
+                    <Select>
+                      <MenuItem value={10}>Option 1</MenuItem>
+                      <MenuItem value={20}>Option 2</MenuItem>
+                    </Select>
+                  </TableCell>
+                </TableRow>
+              ))}
+          </TableBody>
+        </Table>
+      </TableContainer>
     </div>
   );
 }

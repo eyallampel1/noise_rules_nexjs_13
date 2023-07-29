@@ -88,7 +88,12 @@ export default function SignIn() {
           }}
         >
           {/* Show error message when login fails */}
-          {loginError && <p style={{ color: "red" }}>{loginError}</p>}
+          {loginError && (
+            <p style={{ color: "red", fontSize: "30px", fontWeight: "bold" }}>
+              {loginError}
+            </p>
+          )}
+
           <Avatar sx={{ m: 1, bgcolor: "secondary.main" }}>
             <LockOutlinedIcon />
           </Avatar>
