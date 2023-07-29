@@ -93,16 +93,16 @@ export default function SignIn() {
               control={<Checkbox value="remember" color="primary" />}
               label="Remember me"
             />
-            <Link href="/help" style={{ textDecoration: "none" }} passHref>
-              <Button
-                type="submit"
-                fullWidth
-                variant="contained"
-                sx={{ mt: 3, mb: 2 }}
-              >
-                Sign In
-              </Button>
-            </Link>
+            {/*<Link href="/help" style={{ textDecoration: "none" }} passHref>*/}
+            <Button
+              type="submit"
+              fullWidth
+              variant="contained"
+              sx={{ mt: 3, mb: 2 }}
+            >
+              Sign In
+            </Button>
+            {/*</Link>*/}
             <Grid container>
               <Grid item xs>
                 <Link href="#" variant="body2">
