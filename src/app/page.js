@@ -9,7 +9,7 @@ export default function Home() {
       {/*<main>*/}
       <h1>LOGIN COMP</h1>
       <Signin />
-      <Login fromParent={"bla bla"} />
+      {/*<Login fromParent={"bla bla"} />*/}
       {/*</main>*/}
     </>
   );
