@@ -1,17 +1,34 @@
 import React, { useState } from "react";
 import axios from "axios";
 import Button from "@mui/material/Button";
-import {
-  Input,
-  Table,
-  TableBody,
-  TableCell,
-  TableContainer,
-  TableHead,
-  TableRow,
-  Select,
-  MenuItem,
-} from "@mui/material";
+import { Input } from "@mui/material";
+import Autocomplete from "@mui/material/Autocomplete";
+import TextField from "@mui/material/TextField";
+
+import Table from "@mui/material/Table";
+import TableBody from "@mui/material/TableBody";
+import TableCell from "@mui/material/TableCell";
+import TableContainer from "@mui/material/TableContainer";
+import TableHead from "@mui/material/TableHead";
+import TableRow from "@mui/material/TableRow";
+import Paper from "@mui/material/Paper";
+import Typography from "@mui/material/Typography";
+
+// Sample data for Autocomplete
+const options = [
+  { label: "ANALOG_1_OUT" },
+  { label: "NONE" },
+  { label: "GBE_ANALOG_OUT_ems" },
+  { label: "GBE_ANALOG_OUT" },
+  { label: "MGT_IN" },
+  { label: "MGT_OUT" },
+  { label: "CRITICAL_NT" },
+  { label: "CRITICAL_T_IN" },
+  { label: "FAST_OUT" },
+  { label: "FAST_IN" },
+  { label: "REGULAR" },
+  // ...add more options here
+];
 
 function FileUpload() {
   const [file, setFile] = useState(null);
@@ -21,7 +38,8 @@ function FileUpload() {
     setFile(event.target.files[0]);
   };
 
-  const onFileUpload = () => {
+  const onFileUpload = (event) => {
+    event.preventDefault();
     const formData = new FormData();
     formData.append("file", file);
 
@@ -36,41 +54,69 @@ function FileUpload() {
 
   return (
     <div>
-      <Input type="file" onChange={onFileChange} />
-      <Button variant="contained" onClick={onFileUpload}>
-        Upload
-      </Button>
-      <TableContainer>
-        <Table>
-          <TableHead>
-            <TableRow>
-              <TableCell>Constraint Class</TableCell>
-              <TableCell>In Class Noise Rule</TableCell>
-              <TableCell>Out of Class Noise Rule</TableCell>
-            </TableRow>
-          </TableHead>
-          <TableBody>
-            {serverResponse &&
-              serverResponse.map((item, index) => (
-                <TableRow key={index}>
-                  <TableCell>{item.constraintClassName}</TableCell>
-                  <TableCell>
-                    <Select>
-                      <MenuItem value={10}>Option 1</MenuItem>
-                      <MenuItem value={20}>Option 2</MenuItem>
-                    </Select>
+      <div className={"flex justify-center items-center space-x-20 container"}>
+        <Input type="file" onChange={onFileChange} accept=".csv" />
+        <Button variant="contained" onClick={onFileUpload}>
+          Upload
+        </Button>
+      </div>
+
+      {serverResponse && (
+        <div>
+          <h2>Server Response:</h2>
+          <TableContainer
+            component={Paper}
+            style={{ height: "800px", overflow: "auto" }}
+          >
+            <Table stickyHeader aria-label="simple table">
+              <TableHead>
+                <TableRow>
+                  <TableCell sx={{ backgroundColor: "#27E537" }}>
+                    <Typography variant="h6">Constraint Class</Typography>
                   </TableCell>
-                  <TableCell>
-                    <Select>
-                      <MenuItem value={10}>Option 1</MenuItem>
-                      <MenuItem value={20}>Option 2</MenuItem>
-                    </Select>
+                  <TableCell sx={{ backgroundColor: "#27E537" }}>
+                    <Typography variant="h6">In class Noise Rule</Typography>
+                  </TableCell>
+                  <TableCell sx={{ backgroundColor: "#27E537" }}>
+                    <Typography variant="h6">
+                      Out of Class Noise Rule
+                    </Typography>
                   </TableCell>
                 </TableRow>
-              ))}
-          </TableBody>
-        </Table>
-      </TableContainer>
+              </TableHead>
+              <TableBody>
+                {serverResponse.map((row, index) => (
+                  <TableRow key={index}>
+                    <TableCell>{row.constraintClassName}</TableCell>
+                    <TableCell>
+                      <Autocomplete
+                        disablePortal
+                        id={`autocomplete-in-class-${index}`}
+                        options={options}
+                        getOptionLabel={(option) => option.label}
+                        renderInput={(params) => (
+                          <TextField {...params} label="InClass Rule" />
+                        )}
+                      />
+                    </TableCell>
+                    <TableCell>
+                      <Autocomplete
+                        disablePortal
+                        id={`autocomplete-out-class-${index}`}
+                        options={options}
+                        getOptionLabel={(option) => option.label}
+                        renderInput={(params) => (
+                          <TextField {...params} label="OutClass Rule" />
+                        )}
+                      />
+                    </TableCell>
+                  </TableRow>
+                ))}
+              </TableBody>
+            </Table>
+          </TableContainer>
+        </div>
+      )}
     </div>
   );
 }

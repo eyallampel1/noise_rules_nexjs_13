@@ -14,7 +14,10 @@ const Main_page = () => {
         {/*  <TextField id="outlined-basic" label="Outlined" variant="outlined" />*/}
         {/*  <Button variant="contained">Browse</Button>*/}
         {/*</div>*/}
-        <Button variant="contained">Convert</Button>
+        <div className="flex justify-center items-center space-x-4 container mt-4">
+          <Button variant="contained">Save Table</Button>
+          <Button variant="contained">Send To CES</Button>
+        </div>
       </div>
     </>
   );
