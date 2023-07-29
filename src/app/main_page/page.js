@@ -1,6 +1,8 @@
+"use client";
 import TextField from "@mui/material/TextField";
 import Button from "@mui/material/Button";
 import FileUploader from "@/app/components/BrowseAndSend/BrowseAndSend";
+import withAuth from "../components/withAuth/withAuth";
 
 const Main_page = () => {
   return (
@@ -18,4 +20,4 @@ const Main_page = () => {
   );
 };
 
-export default Main_page;
+export default withAuth(Main_page);

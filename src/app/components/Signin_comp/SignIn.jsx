@@ -1,5 +1,5 @@
 "use client";
-import React from "react";
+import React, { useState } from "react";
 import Avatar from "@mui/material/Avatar";
 import Button from "@mui/material/Button";
 import CssBaseline from "@mui/material/CssBaseline";
@@ -38,6 +38,10 @@ const defaultTheme = createTheme();
 
 export default function SignIn() {
   const router = useRouter();
+
+  // State for handling login error
+  const [loginError, setLoginError] = useState("");
+
   const handleSubmit = async (event) => {
     event.preventDefault();
     const data = new FormData(event.currentTarget);
@@ -56,10 +60,18 @@ export default function SignIn() {
     if (response.ok) {
       const result = await response.json();
       console.log("Success:", result);
-      // Redirect to /help
+      // Setting "isLoggedIn" in sessionStorage on successful login
+      sessionStorage.setItem("isLoggedIn", true);
+      // Redirect to /main_page
       router.push("/main_page");
     } else {
       console.log("Failure");
+      // Set login error state
+      setLoginError("Incorrect login details");
+      // Clear the error message after 5 seconds
+      setTimeout(() => {
+        setLoginError("");
+      }, 5000);
     }
   };
 
@@ -75,6 +87,8 @@ export default function SignIn() {
             alignItems: "center",
           }}
         >
+          {/* Show error message when login fails */}
+          {loginError && <p style={{ color: "red" }}>{loginError}</p>}
           <Avatar sx={{ m: 1, bgcolor: "secondary.main" }}>
             <LockOutlinedIcon />
           </Avatar>
