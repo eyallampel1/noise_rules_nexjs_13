@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import axios from "axios";
 import Button from "@mui/material/Button";
 import { Input } from "@mui/material";
@@ -30,7 +30,7 @@ const options = [
   // ...add more options here
 ];
 
-function FileUpload() {
+function FileUpload({ onTableDataChange }) {
   const [file, setFile] = useState(null);
   const [serverResponse, setServerResponse] = useState(null);
 
@@ -51,6 +51,12 @@ function FileUpload() {
       })
       .catch((error) => console.log(error));
   };
+
+  useEffect(() => {
+    if (serverResponse) {
+      onTableDataChange(serverResponse);
+    }
+  }, [serverResponse]);
 
   return (
     <div>
