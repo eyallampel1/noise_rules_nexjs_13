@@ -1,5 +1,5 @@
-function createRuleData(name, sameLayer, adjacentLayer) {
-  return { name, sameLayer, adjacentLayer };
+function createRuleData(name, description, sameLayer, adjacentLayer) {
+  return { name, description, sameLayer, adjacentLayer };
 }
 
 function createSegmentData(name, maxParallel) {
@@ -9,6 +9,7 @@ function createSegmentData(name, maxParallel) {
 const parallelismRules = [
   createRuleData(
     "CRITICAL_NT",
+    "CRITICAL_NT is a rule designed for very high-speed signals for example: PCIe",
     [
       createSegmentData("4", 75),
       createSegmentData("5", 150),
@@ -30,6 +31,7 @@ const parallelismRules = [
   ),
   createRuleData(
     "NON_CRITICAL",
+    "NON_CRITICAL is a rule designed for very high-speed signals for example: PCIe",
     [
       createSegmentData("4", 75),
       createSegmentData("5", 150),
@@ -45,6 +47,7 @@ const parallelismRules = [
   ),
   createRuleData(
     "REGULAR",
+    "REGULAR is a rule designed for very high-speed signals for example: PCIe",
     [
       createSegmentData("4", 75),
       createSegmentData("5", 150),
@@ -66,6 +69,7 @@ const parallelismRules = [
   ),
   createRuleData(
     "NONE",
+    "NONE is a rule designed for very high-speed signals for example: PCIe",
     [
       createSegmentData("4", 75),
       createSegmentData("5", 150),
@@ -87,6 +91,7 @@ const parallelismRules = [
   ),
   createRuleData(
     "CRITICAL_T_IN",
+    "CRITICAL_T_IN is a rule designed for very high-speed signals for example: PCIe",
     [
       createSegmentData("4", 75),
       createSegmentData("5", 150),
@@ -108,6 +113,7 @@ const parallelismRules = [
   ),
   createRuleData(
     "FAST_OUT",
+    "FAST_OUT is a rule designed for very high-speed signals for example: PCIe",
     [
       createSegmentData("4", 75),
       createSegmentData("5", 150),
@@ -129,6 +135,7 @@ const parallelismRules = [
   ),
   createRuleData(
     "FAST_IN",
+    "FAST_IN is a rule designed for very high-speed signals for example: PCIe",
     [
       createSegmentData("4", 75),
       createSegmentData("5", 150),
@@ -150,6 +157,7 @@ const parallelismRules = [
   ),
   createRuleData(
     "RESET",
+    "RESET is a rule designed for very high-speed signals for example: PCIe",
     [
       createSegmentData("4", 75),
       createSegmentData("5", 150),
@@ -171,6 +179,7 @@ const parallelismRules = [
   ),
   createRuleData(
     "GBE_ANALOG_OUT",
+    "GBE_ANALOG_OUT is a rule designed for very high-speed signals for example: PCIe",
     [
       createSegmentData("4", 75),
       createSegmentData("5", 150),
@@ -192,6 +201,7 @@ const parallelismRules = [
   ),
   createRuleData(
     "GBE_ANALOG_IN",
+    "GBE_ANALOG_IN is a rule designed for very high-speed signals for example: PCIe",
     [
       createSegmentData("4", 75),
       createSegmentData("5", 150),
@@ -213,6 +223,7 @@ const parallelismRules = [
   ),
   createRuleData(
     "MGT_OUT",
+    "MGT_OUT is a rule designed for very high-speed signals for example: PCIe",
     [
       createSegmentData("4", 75),
       createSegmentData("5", 150),
@@ -234,6 +245,7 @@ const parallelismRules = [
   ),
   createRuleData(
     "MGT_IN",
+    "MGT_IN is a rule designed for very high-speed signals for example: PCIe",
     [
       createSegmentData("4", 75),
       createSegmentData("5", 150),
@@ -255,6 +267,7 @@ const parallelismRules = [
   ),
   createRuleData(
     "ANALOG_1_OUT",
+    "ANALOG_1_OUT is a rule designed for very high-speed signals for example: PCIe",
     [
       createSegmentData("4", 75),
       createSegmentData("5", 150),

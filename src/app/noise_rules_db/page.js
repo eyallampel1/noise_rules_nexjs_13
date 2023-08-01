@@ -24,6 +24,7 @@ const NoiseRulesDB = () => {
   const [selectedRow, setSelectedRow] = useState(null);
   const [open, setOpen] = useState(false);
   const [open2, setOpen2] = useState(false);
+  const [selectedRuleDescription, setSelectedRuleDescription] = useState("");
   const [sameLayerTraceSegments, setSameLayerTraceSegments] = useState([]);
   const [adjacentLayerTraceSegments, setAdjacentLayerTraceSegments] = useState(
     [],
@@ -57,6 +58,7 @@ const NoiseRulesDB = () => {
   const handleRowClick = (rule) => {
     setSelectedRow(rule.name);
     setSameLayerTraceSegments(rule.sameLayer);
+    setSelectedRuleDescription(rule.description);
     setAdjacentLayerTraceSegments(rule.adjacentLayer);
   };
 
@@ -197,6 +199,18 @@ const NoiseRulesDB = () => {
           </TableContainer>
         </Grid>
       </Grid>
+      <div
+        className={
+          "flex justify-center items-center space-x-20 container mb-10"
+        }
+      >
+        {selectedRow && (
+          <div>
+            <h2>{selectedRow}:</h2>
+            <p>{selectedRuleDescription}</p>
+          </div>
+        )}
+      </div>
     </div>
   );
 };
