@@ -34,6 +34,24 @@ function FileUpload({ onTableDataChange }) {
   const [file, setFile] = useState(null);
   const [serverResponse, setServerResponse] = useState(null);
 
+  const cleanResponse = (response) => {
+    return response.filter((row) => {
+      console.log(row);
+      // Exclude rows with constraintClassName being "Constraint Class" or "index"
+      if (
+        row.constraintClassName === "Constraint class" ||
+        row.constraintClassName === "Index"
+      ) {
+        return false;
+      }
+
+      // Exclude rows with null or empty properties
+      return Object.values(row).every(
+        (value) => value !== null && value !== "",
+      );
+    });
+  };
+
   const onFileChange = (event) => {
     setFile(event.target.files[0]);
   };
@@ -47,7 +65,8 @@ function FileUpload({ onTableDataChange }) {
       .post("http://localhost:4900/upload", formData)
       .then((response) => {
         console.log(response);
-        setServerResponse(response.data.result);
+        const cleanedResponse = cleanResponse(response.data.result); // Applying the clean function
+        setServerResponse(cleanedResponse);
       })
       .catch((error) => console.log(error));
   };

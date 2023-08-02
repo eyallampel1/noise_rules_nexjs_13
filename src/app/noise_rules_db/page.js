@@ -1,5 +1,6 @@
 "use client";
 
+// import ReactPlayer from "react-player";
 import Button from "@mui/material/Button";
 import React, { useState } from "react";
 import { useRouter } from "next/navigation";
@@ -211,6 +212,9 @@ const NoiseRulesDB = () => {
           </div>
         )}
       </div>
+      {/*  <div>*/}
+      {/*    <ReactPlayer url="example.mp4" controls />*/}
+      {/*  </div>*/}
     </div>
   );
 };
