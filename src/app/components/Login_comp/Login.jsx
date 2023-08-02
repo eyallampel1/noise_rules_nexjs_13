@@ -4,6 +4,7 @@ import Link from "next/link";
 import styles from "./styles.module.css";
 import { State } from "../../State";
 import { reactive, useObservable, Reactive } from "@legendapp/state/react";
+import withAuth from "@/app/components/withAuth/withAuth";
 
 const Login = (props) => {
   const state$ = useObservable(State.user.profile.name);
@@ -16,4 +17,4 @@ const Login = (props) => {
     </div>
   );
 };
-export default Login;
+export default withAuth(Login);

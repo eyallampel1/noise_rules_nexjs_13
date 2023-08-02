@@ -19,6 +19,7 @@ import {
 import Grid from "@mui/material/Grid";
 
 import parallelismRules from "./noiseRulesData";
+import withAuth from "@/app/components/withAuth/withAuth";
 
 const NoiseRulesDB = () => {
   const router = useRouter();
@@ -218,4 +219,5 @@ const NoiseRulesDB = () => {
     </div>
   );
 };
-export default NoiseRulesDB;
+
+export default withAuth(NoiseRulesDB);

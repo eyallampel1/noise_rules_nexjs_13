@@ -4,7 +4,6 @@ import Button from "@mui/material/Button";
 import { Input } from "@mui/material";
 import Autocomplete from "@mui/material/Autocomplete";
 import TextField from "@mui/material/TextField";
-
 import Table from "@mui/material/Table";
 import TableBody from "@mui/material/TableBody";
 import TableCell from "@mui/material/TableCell";
@@ -13,6 +12,7 @@ import TableHead from "@mui/material/TableHead";
 import TableRow from "@mui/material/TableRow";
 import Paper from "@mui/material/Paper";
 import Typography from "@mui/material/Typography";
+import withAuth from "@/app/components/withAuth/withAuth";
 
 // Sample data for Autocomplete
 const options = [
@@ -27,20 +27,24 @@ const options = [
   { label: "FAST_OUT" },
   { label: "FAST_IN" },
   { label: "REGULAR" },
-  // ...add more options here
 ];
 
-function FileUpload({ onTableDataChange }) {
+function FileUpload({ onTableDataChange, tableData: externalTableData }) {
   const [file, setFile] = useState(null);
   const [serverResponse, setServerResponse] = useState(null);
+  const [localTableData, setLocalTableData] = useState(externalTableData);
 
   const cleanResponse = (response) => {
     return response.filter((row) => {
-      console.log(row);
-      // Exclude rows with constraintClassName being "Constraint Class" or "index"
+      // Check for rows with all null or empty properties
+      if (Object.values(row).every((value) => value == null || value === "")) {
+        return false;
+      }
+
+      // Check for rows that start with "index" or "Constraint class"
       if (
-        row.constraintClassName === "Constraint class" ||
-        row.constraintClassName === "Index"
+        row.constraintClassName.trim().toLowerCase() === "index" ||
+        row.constraintClassName.trim().toLowerCase() === "constraint class"
       ) {
         return false;
       }
@@ -50,6 +54,20 @@ function FileUpload({ onTableDataChange }) {
         (value) => value !== null && value !== "",
       );
     });
+  };
+
+  const handleInClassSelection = (index, value) => {
+    const updatedData = [...localTableData];
+    updatedData[index].inClassNoiseRule = value ? value.label : null;
+    setLocalTableData(updatedData);
+    onTableDataChange(updatedData);
+  };
+
+  const handleOutClassSelection = (index, value) => {
+    const updatedData = [...localTableData];
+    updatedData[index].outOfClassNoiseRule = value ? value.label : null;
+    setLocalTableData(updatedData);
+    onTableDataChange(updatedData);
   };
 
   const onFileChange = (event) => {
@@ -73,9 +91,20 @@ function FileUpload({ onTableDataChange }) {
 
   useEffect(() => {
     if (serverResponse) {
-      onTableDataChange(serverResponse);
+      const initData = serverResponse.map((row) => ({
+        constraintClassName: row.constraintClassName,
+        inClassNoiseRule: null,
+        outOfClassNoiseRule: null,
+      }));
+      setLocalTableData(initData);
+      onTableDataChange(initData);
     }
-  }, [serverResponse]);
+  }, [serverResponse, onTableDataChange]);
+
+  useEffect(() => {
+    setLocalTableData(externalTableData);
+    onTableDataChange(externalTableData);
+  }, [externalTableData, onTableDataChange]);
 
   return (
     <div>
@@ -85,8 +114,7 @@ function FileUpload({ onTableDataChange }) {
           Upload
         </Button>
       </div>
-
-      {serverResponse && (
+      {localTableData && (
         <div>
           <h2>Server Response:</h2>
           <TableContainer
@@ -110,11 +138,21 @@ function FileUpload({ onTableDataChange }) {
                 </TableRow>
               </TableHead>
               <TableBody>
-                {serverResponse.map((row, index) => (
+                {localTableData.map((row, index) => (
                   <TableRow key={index}>
                     <TableCell>{row.constraintClassName}</TableCell>
                     <TableCell>
                       <Autocomplete
+                        value={
+                          options.find(
+                            (option) =>
+                              option.label ===
+                              localTableData[index].inClassNoiseRule,
+                          ) || null
+                        }
+                        onChange={(_, value) =>
+                          handleInClassSelection(index, value)
+                        }
                         disablePortal
                         id={`autocomplete-in-class-${index}`}
                         options={options}
@@ -126,6 +164,16 @@ function FileUpload({ onTableDataChange }) {
                     </TableCell>
                     <TableCell>
                       <Autocomplete
+                        value={
+                          options.find(
+                            (option) =>
+                              option.label ===
+                              localTableData[index].outOfClassNoiseRule, // change this line
+                          ) || null
+                        }
+                        onChange={(_, value) =>
+                          handleOutClassSelection(index, value)
+                        }
                         disablePortal
                         id={`autocomplete-out-class-${index}`}
                         options={options}
@@ -146,4 +194,4 @@ function FileUpload({ onTableDataChange }) {
   );
 }
 
-export default FileUpload;
+export default withAuth(FileUpload);
