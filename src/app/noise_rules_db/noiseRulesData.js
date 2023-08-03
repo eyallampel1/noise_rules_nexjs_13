@@ -245,7 +245,7 @@ const parallelismRules = [
   ),
   createRuleData(
     "MGT_IN",
-    "MGT_IN is a rule designed for very high-speed signals for example: PCIe",
+    "MGT_INis a rule designed for very high-speed signals for example: PCIe",
     [
       createSegmentData("4", 75),
       createSegmentData("5", 150),
@@ -267,7 +267,7 @@ const parallelismRules = [
   ),
   createRuleData(
     "ANALOG_1_OUT",
-    "ANALOG_1_OUT is a rule designed for very high-speed signals for example: PCIe",
+    "Rule 1 is a rule designed for very high-speed signals for example: PCIe",
     [
       createSegmentData("4", 75),
       createSegmentData("5", 150),

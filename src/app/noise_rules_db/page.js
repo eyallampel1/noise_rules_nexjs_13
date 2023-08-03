@@ -32,6 +32,12 @@ const NoiseRulesDB = () => {
     [],
   );
 
+  const [searchQuery, setSearchQuery] = useState("");
+
+  const filteredParallelismRules = parallelismRules.filter((rule) =>
+    rule.name.toLowerCase().includes(searchQuery.toLowerCase()),
+  );
+
   const handleClick = () => {
     setOpen(true);
   };
@@ -113,92 +119,130 @@ const NoiseRulesDB = () => {
         </Snackbar>
       </div>
 
+      <div className="mb-4">
+        <input
+          type="text"
+          placeholder="Search for rules..."
+          value={searchQuery}
+          onChange={(e) => setSearchQuery(e.target.value)}
+          style={{
+            width: "50%",
+            padding: "10px",
+            margin: "8px 0",
+            boxSizing: "border-box",
+            borderRadius: "4px",
+            border: "1px solid #ccc",
+          }}
+        />
+      </div>
       <Grid container spacing={2}>
         <Grid item xs={6}>
-          <TableContainer component={Paper}>
-            <h2>Parallelism rules:</h2>
-            <Table>
-              <TableHead style={{ backgroundColor: "lightgreen" }}>
-                <TableRow>
-                  <TableCell>Name</TableCell>
-                </TableRow>
-              </TableHead>
-              <TableBody>
-                {parallelismRules.map((rule, index) => (
-                  <TableRow
-                    key={rule.name}
-                    hover
-                    onClick={() => handleRowClick(rule)}
-                    style={{
-                      backgroundColor:
-                        selectedRow === rule.name ? "lightgray" : "",
-                      cursor: "pointer",
-                    }}
-                  >
-                    <TableCell component="th" scope="row">
-                      {rule.name}
+          <div style={{ maxHeight: "900px", overflow: "auto" }}>
+            <TableContainer component={Paper}>
+              <Table>
+                <TableHead>
+                  <TableRow>
+                    <TableCell
+                      style={{
+                        position: "sticky",
+                        boxShadow: "0px 2px 2px #f0f0f0",
+                        top: 0,
+                        zIndex: 1000, // Ensure it's on top of other elements
+                        backgroundColor: "lightgreen", // Background color
+                      }}
+                    >
+                      Noise Rules Name:
                     </TableCell>
                   </TableRow>
-                ))}
-              </TableBody>
-            </Table>
-          </TableContainer>
+                </TableHead>
+
+                <TableBody>
+                  {filteredParallelismRules.map((rule, index) => (
+                    <TableRow
+                      key={rule.name}
+                      hover
+                      onClick={() => handleRowClick(rule)}
+                      style={{
+                        backgroundColor:
+                          selectedRow === rule.name ? "lightgray" : "",
+                        cursor: "pointer",
+                      }}
+                    >
+                      <TableCell component="th" scope="row">
+                        {rule.name}
+                      </TableCell>
+                    </TableRow>
+                  ))}
+                </TableBody>
+              </Table>
+            </TableContainer>
+          </div>
         </Grid>
         <Grid item xs={6}>
-          <TableContainer component={Paper}>
-            <h2>
-              Same layer trace segments for:
-              <span style={{ color: selectedRow ? "red" : "inherit" }}>
-                {" "}
-                {selectedRow || "None selected"}{" "}
-              </span>
-            </h2>
-            <Table>
-              <TableHead style={{ backgroundColor: "lightgreen" }}>
-                <TableRow>
-                  <TableCell>Edge/Edge trace segments</TableCell>
-                  <TableCell>Max Parallel Len (th)</TableCell>
-                </TableRow>
-              </TableHead>
-              <TableBody>
-                {sameLayerTraceSegments.map((row) => (
-                  <TableRow key={row.name}>
-                    <TableCell component="th" scope="row">
-                      {row.name}
-                    </TableCell>
-                    <TableCell>{row.maxParallel}</TableCell>
+          <div
+            style={{
+              display: "flex",
+              flexDirection: "column",
+              alignItems: "center",
+            }}
+          >
+            {" "}
+            {/* Add this line */}
+            <TableContainer component={Paper}>
+              <h2>
+                Same layer trace segments for:
+                <span style={{ color: selectedRow ? "red" : "inherit" }}>
+                  {" "}
+                  {selectedRow || "None selected"}{" "}
+                </span>
+              </h2>
+              <Table>
+                <TableHead style={{ backgroundColor: "lightgreen" }}>
+                  <TableRow>
+                    <TableCell>Edge/Edge trace segments</TableCell>
+                    <TableCell>Max Parallel Len (th)</TableCell>
                   </TableRow>
-                ))}
-              </TableBody>
-            </Table>
-          </TableContainer>
-          <TableContainer component={Paper}>
-            <h2>
-              Adjacent layer trace segments for:
-              <span style={{ color: selectedRow ? "red" : "inherit" }}>
-                {" "}
-                {selectedRow || "None selected"}{" "}
-              </span>
-            </h2>
-            <Table>
-              <TableHead style={{ backgroundColor: "lightgreen" }}>
-                <TableRow>
-                  <TableCell>Edge/Edge trace segments</TableCell>
-                  <TableCell>Max Parallel Len (th)</TableCell>
-                </TableRow>
-              </TableHead>
-              <TableBody>
-                {adjacentLayerTraceSegments.map((row) => (
-                  <TableRow key={row.name}>
-                    <TableCell component="th" scope="row">
-                      {row.name}
-                    </TableCell>
-                    <TableCell>{row.maxParallel}</TableCell>
+                </TableHead>
+                <TableBody>
+                  {sameLayerTraceSegments.map((row) => (
+                    <TableRow key={row.name}>
+                      <TableCell component="th" scope="row">
+                        {row.name}
+                      </TableCell>
+                      <TableCell>{row.maxParallel}</TableCell>
+                    </TableRow>
+                  ))}
+                </TableBody>
+              </Table>
+            </TableContainer>
+            <TableContainer component={Paper}>
+              <h2>
+                Adjacent layer trace segments for:
+                <span style={{ color: selectedRow ? "red" : "inherit" }}>
+                  {" "}
+                  {selectedRow || "None selected"}{" "}
+                </span>
+              </h2>
+              <Table>
+                <TableHead style={{ backgroundColor: "lightgreen" }}>
+                  <TableRow>
+                    <TableCell>Edge/Edge trace segments</TableCell>
+                    <TableCell>Max Parallel Len (th)</TableCell>
                   </TableRow>
-                ))}
-              </TableBody>
-            </Table>
-          </TableContainer>
+                </TableHead>
+                <TableBody>
+                  {adjacentLayerTraceSegments.map((row) => (
+                    <TableRow key={row.name}>
+                      <TableCell component="th" scope="row">
+                        {row.name}
+                      </TableCell>
+                      <TableCell>{row.maxParallel}</TableCell>
+                    </TableRow>
+                  ))}
+                </TableBody>
+              </Table>
+            </TableContainer>
+          </div>
         </Grid>
       </Grid>
       <div
