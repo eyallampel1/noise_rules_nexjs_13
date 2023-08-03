@@ -114,7 +114,7 @@ function FileUpload({ onTableDataChange, tableData: externalTableData }) {
           Upload
         </Button>
       </div>
-      {localTableData && (
+      {localTableData && localTableData.length > 0 && (
         <div>
           <h2>Server Response:</h2>
           <TableContainer

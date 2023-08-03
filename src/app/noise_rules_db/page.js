@@ -1,5 +1,5 @@
 "use client";
-
+import { makeStyles } from "@mui/styles";
 // import ReactPlayer from "react-player";
 import Button from "@mui/material/Button";
 import React, { useState } from "react";
@@ -20,6 +20,15 @@ import Grid from "@mui/material/Grid";
 
 import parallelismRules from "./noiseRulesData";
 import withAuth from "@/app/components/withAuth/withAuth";
+
+const useStyles = makeStyles({
+  stickyHeader: {
+    position: "sticky",
+    top: 0,
+    zIndex: 1000,
+    backgroundColor: "lightgreen",
+  },
+});
 
 const NoiseRulesDB = () => {
   const router = useRouter();
@@ -69,6 +78,8 @@ const NoiseRulesDB = () => {
     setSelectedRuleDescription(rule.description);
     setAdjacentLayerTraceSegments(rule.adjacentLayer);
   };
+
+  const classes = useStyles();
 
   return (
     <div>
@@ -142,15 +153,7 @@ const NoiseRulesDB = () => {
               <Table>
                 <TableHead>
                   <TableRow>
-                    <TableCell
-                      style={{
-                        position: "sticky",
-                        boxShadow: "0px 2px 2px #f0f0f0",
-                        top: 0,
-                        zIndex: 1000, // Ensure it's on top of other elements
-                        backgroundColor: "lightgreen", // Background color
-                      }}
-                    >
+                    <TableCell className={classes.stickyHeader}>
                       Noise Rules Name:
                     </TableCell>
                   </TableRow>

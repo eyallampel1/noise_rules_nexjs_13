@@ -6,9 +6,10 @@ import FileUploader from "@/app/components/BrowseAndSend/BrowseAndSend";
 import withAuth from "../components/withAuth/withAuth";
 import React, { useState } from "react";
 import { useRouter } from "next/navigation";
+import { State } from "../State";
 
 const Main_page = () => {
-  const [tableData, setTableData] = useState(null);
+  const [tableData, setTableData] = useState(State.noiseData.noiseRules.get());
 
   const handleTableData = (data) => {
     setTableData(data);
@@ -22,8 +23,6 @@ const Main_page = () => {
 
     reader.onload = (e) => {
       const lines = e.target.result.split("\n");
-      console.log("File lines:", lines); // Log the split lines
-
       const newTableData = lines.slice(1).map((line) => {
         const [constraintClassName, inClassNoiseRule, outOfClassNoiseRule] =
           line.split(" ");
@@ -32,7 +31,9 @@ const Main_page = () => {
 
       console.log("Parsed table data:", newTableData); // Log the parsed table data
 
-      setTableData(newTableData);
+      // Set the table data in Legend State
+      State.noiseData.noiseRules.set(newTableData);
+      setTableData(newTableData); // You may still want to keep this if you're using tableData elsewhere in this component
     };
 
     reader.readAsText(file);
@@ -69,7 +70,10 @@ const Main_page = () => {
         >
           <Button
             variant="contained"
-            onClick={() => router.push("/noise_rules_db")}
+            onClick={() => {
+              State.noiseData.noiseRules.set(tableData);
+              router.push("/noise_rules_db");
+            }}
             color="secondary"
           >
             Noise Rules DB
