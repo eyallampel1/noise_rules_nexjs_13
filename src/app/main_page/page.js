@@ -44,7 +44,7 @@ const Main_page = () => {
       const lines = e.target.result.split("\n");
       let newTableData = lines.slice(1).map((line) => {
         const [constraintClassName, inClassNoiseRule, outOfClassNoiseRule] =
-          line.split(" ");
+          line.trim().split(/\s+/); // Splitting by one or more spaces
         return { constraintClassName, inClassNoiseRule, outOfClassNoiseRule };
       });
 
@@ -62,12 +62,41 @@ const Main_page = () => {
   };
 
   const saveTableDataAsTextFile = () => {
-    // Create a text string from the table data
-    let text = "Constraint Class In class Noise Rule Out of Class Noise Rule\n"; // Table headers
+    // Determine the maximum length of each column
+    let maxLengthConstraintClassName = "Constraint Class".length;
+    let maxLengthInClassNoiseRule = "In class Noise Rule".length;
+    let maxLengthOutClassNoiseRule = "Out of Class Noise Rule".length;
+
     tableData.forEach((row) => {
-      text += `${row.constraintClassName} ${row.inClassNoiseRule || "NONE"} ${
-        row.outOfClassNoiseRule || "NONE"
-      }\n`;
+      maxLengthConstraintClassName = Math.max(
+        maxLengthConstraintClassName,
+        (row.constraintClassName || "").length,
+      );
+      maxLengthInClassNoiseRule = Math.max(
+        maxLengthInClassNoiseRule,
+        (row.inClassNoiseRule || "NONE").length,
+      );
+      maxLengthOutClassNoiseRule = Math.max(
+        maxLengthOutClassNoiseRule,
+        (row.outOfClassNoiseRule || "NONE").length,
+      );
+    });
+
+    // Create a text string from the table data with padding
+    let text =
+      "Constraint Class".padEnd(maxLengthConstraintClassName) +
+      " In class Noise Rule".padEnd(maxLengthInClassNoiseRule) +
+      " Out of Class Noise Rule\n"; // Table headers
+    tableData.forEach((row) => {
+      text +=
+        (row.constraintClassName || "").padEnd(maxLengthConstraintClassName) +
+        " ";
+      text +=
+        (row.inClassNoiseRule || "NONE").padEnd(maxLengthInClassNoiseRule) +
+        " ";
+      text +=
+        (row.outOfClassNoiseRule || "NONE").padEnd(maxLengthOutClassNoiseRule) +
+        "\n";
     });
 
     // Create a Blob with the text string
