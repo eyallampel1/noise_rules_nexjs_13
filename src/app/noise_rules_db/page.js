@@ -42,6 +42,7 @@ const NoiseRulesDB = () => {
   );
 
   const [searchQuery, setSearchQuery] = useState("");
+  const [hideOtherRows, setHideOtherRows] = useState(false);
 
   const filteredParallelismRules = parallelismRules.filter((rule) =>
     rule.name.toLowerCase().includes(searchQuery.toLowerCase()),
@@ -73,10 +74,23 @@ const NoiseRulesDB = () => {
   };
 
   const handleRowClick = (rule) => {
-    setSelectedRow(rule.name);
-    setSameLayerTraceSegments(rule.sameLayer);
-    setSelectedRuleDescription(rule.description);
-    setAdjacentLayerTraceSegments(rule.adjacentLayer);
+    if (selectedRow === rule.name) {
+      setSelectedRow(null); // Unselect the rule if it is already selected
+      setSelectedRuleDescription(""); // Clear the description
+      setSameLayerTraceSegments([]); // Clear the same layer trace segments
+      setAdjacentLayerTraceSegments([]); // Clear the adjacent layer trace segments
+
+      // Toggle the value of hideOtherRows if the same row is clicked again
+      setHideOtherRows(!hideOtherRows);
+    } else {
+      // Set hideOtherRows to true if a different row is clicked
+      setHideOtherRows(true);
+
+      setSelectedRow(rule.name); // Set the selected row if it's not already selected
+      setSameLayerTraceSegments(rule.sameLayer);
+      setSelectedRuleDescription(rule.description);
+      setAdjacentLayerTraceSegments(rule.adjacentLayer);
+    }
   };
 
   const classes = useStyles();
@@ -129,7 +143,6 @@ const NoiseRulesDB = () => {
           </Alert>
         </Snackbar>
       </div>
-
       <div className="mb-4">
         <input
           type="text"
@@ -148,38 +161,58 @@ const NoiseRulesDB = () => {
       </div>
       <Grid container spacing={2}>
         <Grid item xs={6}>
-          <div style={{ maxHeight: "900px", overflow: "auto" }}>
+          <div
+            style={{ maxHeight: "900px", overflow: "auto", marginTop: "10%" }}
+          >
             <TableContainer component={Paper}>
               <Table>
                 <TableHead>
                   <TableRow>
-                    <TableCell className={classes.stickyHeader}>
+                    <TableCell
+                      className={classes.stickyHeader}
+                      style={{ verticalAlign: "middle" }}
+                    >
                       Noise Rules Name:
                     </TableCell>
                   </TableRow>
                 </TableHead>
-
                 <TableBody>
-                  {filteredParallelismRules.map((rule, index) => (
-                    <TableRow
-                      key={rule.name}
-                      hover
-                      onClick={() => handleRowClick(rule)}
-                      style={{
-                        backgroundColor:
-                          selectedRow === rule.name ? "lightgray" : "",
-                        cursor: "pointer",
-                      }}
-                    >
-                      <TableCell component="th" scope="row">
-                        {rule.name}
-                      </TableCell>
-                    </TableRow>
-                  ))}
+                  {filteredParallelismRules.map((rule, index) => {
+                    if (!hideOtherRows || selectedRow === rule.name) {
+                      return (
+                        <TableRow
+                          key={rule.name}
+                          hover
+                          onClick={() => handleRowClick(rule)}
+                          style={{
+                            backgroundColor:
+                              selectedRow === rule.name ? "lightgray" : "",
+                            cursor: "pointer",
+                          }}
+                        >
+                          <TableCell component="th" scope="row">
+                            {rule.name}
+                          </TableCell>
+                        </TableRow>
+                      );
+                    }
+                    return null;
+                  })}
                 </TableBody>
               </Table>
             </TableContainer>
           </div>
+          {selectedRow && (
+            <div>
+              <h2>{selectedRow}:</h2>
+              <p>{selectedRuleDescription}</p>
+              <p
+                style={{ color: "red", fontSize: "22px", textAlign: "center" }}
+              >
+                Click Again to show all Noise rules
+              </p>
+            </div>
+          )}
         </Grid>
         <Grid item xs={6}>
           <div
@@ -189,8 +222,6 @@ const NoiseRulesDB = () => {
               alignItems: "center",
             }}
           >
-            {" "}
-            {/* Add this line */}
             <TableContainer component={Paper}>
               <h2>
                 Same layer trace segments for:
@@ -252,17 +283,10 @@ const NoiseRulesDB = () => {
         className={
           "flex justify-center items-center space-x-20 container mb-10"
         }
-      >
-        {selectedRow && (
-          <div>
-            <h2>{selectedRow}:</h2>
-            <p>{selectedRuleDescription}</p>
-          </div>
-        )}
-      </div>
-      {/*  <div>*/}
-      {/*    <ReactPlayer url="example.mp4" controls />*/}
-      {/*  </div>*/}
+      ></div>
+      {/* <div>*/}
+      {/*   <ReactPlayer url="example.mp4" controls />*/}
+      {/* </div>*/}
     </div>
   );
 };
