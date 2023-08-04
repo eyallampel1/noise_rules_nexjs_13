@@ -4,8 +4,18 @@ import { makeStyles } from "@mui/styles";
 import Button from "@mui/material/Button";
 import React, { useState } from "react";
 import { useRouter } from "next/navigation";
+import MenuIcon from "@material-ui/icons/Menu";
+import SearchIcon from "@mui/icons-material/Search";
+import InputBase from "@mui/material/InputBase";
 
 import {
+  List,
+  ListItem,
+  IconButton,
+  Drawer,
+  AppBar,
+  Toolbar,
+  Typography,
   Alert,
   Paper,
   Snackbar,
@@ -52,6 +62,38 @@ const NoiseRulesDB = () => {
     setOpen(true);
   };
 
+  const [drawerOpen, setDrawerOpen] = useState(false);
+
+  const toggleDrawer = (open) => (event) => {
+    setDrawerOpen(open);
+  };
+
+  function saveData() {
+    // Convert data to a string
+    const dataString = JSON.stringify(parallelismRules, null, 2);
+
+    // Create a blob with the data
+    const blob = new Blob([dataString], { type: "text/plain;charset=utf-8" });
+
+    // Create a link to download the blob
+    const downloadLink = document.createElement("a");
+    downloadLink.href = URL.createObjectURL(blob);
+    downloadLink.download = "rules.txt";
+
+    // Append the link to the document
+    document.body.appendChild(downloadLink);
+
+    // Trigger a click event on the link
+    downloadLink.click();
+
+    // Remove the link from the document
+    document.body.removeChild(downloadLink);
+  }
+
+  const handleSaveRulesToPC = () => {
+    saveData();
+  };
+
   const handleClose = (event, reason) => {
     if (reason === "clickaway") {
       return;
@@ -66,6 +108,34 @@ const NoiseRulesDB = () => {
     }
 
     setOpen2(false);
+  };
+
+  const handleFileSelect = (event) => {
+    const file = event.target.files[0];
+    if (file) {
+      const reader = new FileReader();
+
+      // Function to handle the file reading
+      reader.onload = (e) => {
+        try {
+          // Parse the file's contents as JSON
+          const customRules = JSON.parse(e.target.result);
+
+          // Update your rules with the custom data
+          updateRules(customRules);
+        } catch (error) {
+          console.error("Error reading or parsing file:", error);
+        }
+      };
+
+      reader.readAsText(file);
+    }
+  };
+
+  // Function to trigger the file input dialog
+  const handleLoadCustomRules = () => {
+    const fileInput = document.getElementById("fileInput");
+    fileInput.click();
   };
 
   // Add another pair of handler functions for the second Snackbar
@@ -97,7 +167,101 @@ const NoiseRulesDB = () => {
 
   return (
     <div>
-      <h1>Noise Rules DB</h1>
+      <AppBar position="static" className={"mb-6"}>
+        <Toolbar>
+          <IconButton
+            edge="start"
+            color="inherit"
+            aria-label="menu"
+            onClick={toggleDrawer(true)}
+          >
+            <MenuIcon />
+          </IconButton>
+          <Typography variant="h6" component="div" sx={{ flexGrow: 1 }}>
+            Noise Rules DB
+          </Typography>
+          <div
+            style={{
+              position: "relative",
+              borderRadius: "4px",
+              backgroundColor: "rgba(255, 255, 255, 0.15)",
+              marginLeft: "16px",
+            }}
+          >
+            <div
+              style={{
+                padding: "0 16px",
+                position: "absolute",
+                pointerEvents: "none",
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "center",
+              }}
+            >
+              <SearchIcon />
+            </div>
+            <InputBase
+              placeholder="Search for rules..."
+              style={{ color: "inherit", paddingLeft: "100px" }}
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
+            />
+          </div>
+        </Toolbar>
+      </AppBar>
+
+      <Drawer anchor="left" open={drawerOpen} onClose={toggleDrawer(false)}>
+        <List>
+          <ListItem>
+            <Button variant="contained" onClick={handleClick}>
+              Add / Remove Rule
+            </Button>
+          </ListItem>
+          <ListItem>
+            <Button variant="contained" onClick={handleClick2}>
+              Modify Rule
+            </Button>
+          </ListItem>
+          <ListItem>
+            <Button variant="contained" onClick={handleSaveRulesToPC}>
+              Save Rules to PC
+            </Button>
+          </ListItem>
+          <ListItem>
+            <Button variant="contained" onClick={handleLoadCustomRules}>
+              Load Custom Rules
+            </Button>
+          </ListItem>
+        </List>
+      </Drawer>
+
+      <Snackbar
+        open={open}
+        autoHideDuration={4000}
+        anchorOrigin={{
+          vertical: "top",
+          horizontal: "center",
+        }}
+        onClose={handleClose}
+      >
+        <Alert onClose={handleClose} severity="error" sx={{ width: "100%" }}>
+          Only Admins can Add / Remove rules !
+        </Alert>
+      </Snackbar>
+
+      <Snackbar
+        open={open2}
+        autoHideDuration={4000}
+        anchorOrigin={{
+          vertical: "top",
+          horizontal: "center",
+        }}
+        onClose={handleClose2}
+      >
+        <Alert onClose={handleClose2} severity="error" sx={{ width: "100%" }}>
+          Only Admins can Modify rules !
+        </Alert>
+      </Snackbar>
       <Button
         color="secondary"
         variant="contained"
@@ -110,39 +274,14 @@ const NoiseRulesDB = () => {
           "flex justify-center items-center space-x-20 container mb-10"
         }
       >
-        <Button variant="contained" onClick={handleClick}>
-          Add / Remove Rule
-        </Button>
-        <Snackbar
-          open={open}
-          autoHideDuration={4000}
-          anchorOrigin={{
-            vertical: "top",
-            horizontal: "center",
-          }}
-          onClose={handleClose}
-        >
-          <Alert onClose={handleClose} severity="error" sx={{ width: "100%" }}>
-            Only Admins can Add / Remove rules !
-          </Alert>
-        </Snackbar>
-        <Button variant="contained" onClick={handleClick2}>
-          Modify Rule
-        </Button>
-        <Snackbar
-          open={open2}
-          autoHideDuration={4000}
-          anchorOrigin={{
-            vertical: "top",
-            horizontal: "center",
-          }}
-          onClose={handleClose2}
-        >
-          <Alert onClose={handleClose2} severity="error" sx={{ width: "100%" }}>
-            Only Admins can Modify rules !
-          </Alert>
-        </Snackbar>
+        <input
+          type="file"
+          id="fileInput"
+          style={{ display: "none" }}
+          onChange={handleFileSelect}
+        />
       </div>
+
       <div className="mb-4">
         <input
           type="text"
@@ -285,6 +424,7 @@ const NoiseRulesDB = () => {
           "flex justify-center items-center space-x-20 container mb-10"
         }
       ></div>
+
       {/* <div>*/}
       {/*   <ReactPlayer url="example.mp4" controls />*/}
       {/* </div>*/}
