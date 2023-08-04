@@ -36,15 +36,35 @@ const Main_page = () => {
 
   const loadTableDataFromFile = (event) => {
     const file = event.target.files[0];
+
+    // Check if the file is a text file
+    if (file.type !== "text/plain") {
+      alert("Incorrect file type. Please upload a .txt file.");
+      return;
+    }
+
     console.log("Selected file:", file); // Log the selected file
 
     const reader = new FileReader();
 
     reader.onload = (e) => {
       const lines = e.target.result.split("\n");
+
+      // Check the format by examining the first line (headers)
+      if (
+        !lines[0]
+          .trim()
+          .match(
+            /^Constraint Class\s+In class Noise Rule\s+Out of Class Noise Rule$/,
+          )
+      ) {
+        alert("Incorrect table txt format. Please upload a valid table.");
+        return;
+      }
+
       let newTableData = lines.slice(1).map((line) => {
         const [constraintClassName, inClassNoiseRule, outOfClassNoiseRule] =
-          line.trim().split(/\s+/); // Splitting by one or more spaces
+          line.trim().split(/\s+/);
         return { constraintClassName, inClassNoiseRule, outOfClassNoiseRule };
       });
 

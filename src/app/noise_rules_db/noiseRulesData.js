@@ -6,7 +6,7 @@ function createSegmentData(name, maxParallel) {
   return { name, maxParallel };
 }
 
-const parallelismRules = [
+export const parallelismRules = [
   createRuleData(
     "CRITICAL_NT6",
     "CRITICAL_NT is a rule designed for very high-speed signals for example: PCIe",
@@ -157,7 +157,7 @@ const parallelismRules = [
   ),
   createRuleData(
     "NONE",
-    "NONE is a rule designed for very high-speed signals for example: PCIe",
+    "NONE is a rule designed for Not critical signals , if you dont actually care about the length of the signal , its basically a rule that does nothing",
     [
       createSegmentData("4", 75),
       createSegmentData("5", 150),

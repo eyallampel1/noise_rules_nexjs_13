@@ -165,6 +165,7 @@ const NoiseRulesDB = () => {
             style={{ maxHeight: "900px", overflow: "auto", marginTop: "10%" }}
           >
             <TableContainer component={Paper}>
+              <h2>Noise Rules</h2>
               <Table>
                 <TableHead>
                   <TableRow>

@@ -13,21 +13,14 @@ import TableRow from "@mui/material/TableRow";
 import Paper from "@mui/material/Paper";
 import Typography from "@mui/material/Typography";
 import withAuth from "@/app/components/withAuth/withAuth";
+import { parallelismRules } from "../../noise_rules_db/noiseRulesData";
+import Tooltip from "@mui/material/Tooltip";
 
 // Sample data for Autocomplete
-const options = [
-  { label: "ANALOG_1_OUT" },
-  { label: "NONE" },
-  { label: "GBE_ANALOG_OUT_ems" },
-  { label: "GBE_ANALOG_OUT" },
-  { label: "MGT_IN" },
-  { label: "MGT_OUT" },
-  { label: "CRITICAL_NT" },
-  { label: "CRITICAL_T_IN" },
-  { label: "FAST_OUT" },
-  { label: "FAST_IN" },
-  { label: "REGULAR" },
-];
+// Transform the parallelismRules into the format required for Autocomplete
+const options = parallelismRules.map((rule) => ({
+  label: rule.name,
+}));
 
 function FileUpload({ onTableDataChange, tableData: externalTableData }) {
   const [file, setFile] = useState(null);
@@ -56,6 +49,17 @@ function FileUpload({ onTableDataChange, tableData: externalTableData }) {
     });
   };
 
+  const [tooltipContent, setTooltipContent] = useState("");
+
+  const handleTooltipContent = (event, option) => {
+    if (option) {
+      const rule = parallelismRules.find((rule) => rule.name === option.label);
+      setTooltipContent(rule ? rule.description : "");
+    } else {
+      setTooltipContent("");
+    }
+  };
+
   const handleInClassSelection = (index, value) => {
     const updatedData = [...localTableData];
     updatedData[index].inClassNoiseRule = value ? value.label : null;
@@ -76,17 +80,24 @@ function FileUpload({ onTableDataChange, tableData: externalTableData }) {
 
   const onFileUpload = (event) => {
     event.preventDefault();
-    const formData = new FormData();
-    formData.append("file", file);
 
-    axios
-      .post("http://localhost:4900/upload", formData)
-      .then((response) => {
-        console.log(response);
-        const cleanedResponse = cleanResponse(response.data.result); // Applying the clean function
-        setServerResponse(cleanedResponse);
-      })
-      .catch((error) => console.log(error));
+    // Check if the file is selected and its type is .csv
+    if (file && file.name.endsWith(".csv")) {
+      const formData = new FormData();
+      formData.append("file", file);
+
+      axios
+        .post("http://localhost:4900/upload", formData)
+        .then((response) => {
+          console.log(response);
+          const cleanedResponse = cleanResponse(response.data.result); // Applying the clean function
+          setServerResponse(cleanedResponse);
+        })
+        .catch((error) => console.log(error));
+    } else {
+      // Alert the user if the file is not a .csv
+      alert("Please upload a .csv file!");
+    }
   };
 
   useEffect(() => {
@@ -142,46 +153,53 @@ function FileUpload({ onTableDataChange, tableData: externalTableData }) {
                   <TableRow key={index}>
                     <TableCell>{row.constraintClassName}</TableCell>
                     <TableCell>
-                      <Autocomplete
-                        value={
-                          options.find(
-                            (option) =>
-                              option.label ===
-                              localTableData[index].inClassNoiseRule,
-                          ) || null
-                        }
-                        onChange={(_, value) =>
-                          handleInClassSelection(index, value)
-                        }
-                        disablePortal
-                        id={`autocomplete-in-class-${index}`}
-                        options={options}
-                        getOptionLabel={(option) => option.label}
-                        renderInput={(params) => (
-                          <TextField {...params} label="InClass Rule" />
-                        )}
-                      />
+                      <Tooltip title={tooltipContent}>
+                        <Autocomplete
+                          value={
+                            options.find(
+                              (option) =>
+                                option.label ===
+                                localTableData[index].inClassNoiseRule,
+                            ) || null
+                          }
+                          onChange={(_, value) =>
+                            handleInClassSelection(index, value)
+                          }
+                          onHighlightChange={handleTooltipContent}
+                          disablePortal
+                          id={`autocomplete-in-class-${index}`}
+                          options={options}
+                          getOptionLabel={(option) => option.label}
+                          renderInput={(params) => (
+                            <TextField {...params} label="InClass Rule" />
+                          )}
+                        />
+                      </Tooltip>
                     </TableCell>
+
                     <TableCell>
-                      <Autocomplete
-                        value={
-                          options.find(
-                            (option) =>
-                              option.label ===
-                              localTableData[index].outOfClassNoiseRule, // change this line
-                          ) || null
-                        }
-                        onChange={(_, value) =>
-                          handleOutClassSelection(index, value)
-                        }
-                        disablePortal
-                        id={`autocomplete-out-class-${index}`}
-                        options={options}
-                        getOptionLabel={(option) => option.label}
-                        renderInput={(params) => (
-                          <TextField {...params} label="OutClass Rule" />
-                        )}
-                      />
+                      <Tooltip title={tooltipContent}>
+                        <Autocomplete
+                          value={
+                            options.find(
+                              (option) =>
+                                option.label ===
+                                localTableData[index].outOfClassNoiseRule,
+                            ) || null
+                          }
+                          onChange={(_, value) =>
+                            handleOutClassSelection(index, value)
+                          }
+                          onHighlightChange={handleTooltipContent}
+                          disablePortal
+                          id={`autocomplete-out-class-${index}`}
+                          options={options}
+                          getOptionLabel={(option) => option.label}
+                          renderInput={(params) => (
+                            <TextField {...params} label="OutClass Rule" />
+                          )}
+                        />
+                      </Tooltip>
                     </TableCell>
                   </TableRow>
                 ))}
