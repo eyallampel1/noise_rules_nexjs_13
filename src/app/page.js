@@ -7,6 +7,7 @@ export default function Home() {
   return (
     <>
       {/*<main>*/}
+
       <h1>LOGIN COMP</h1>
       <Signin />
       {/*<Login fromParent={"bla bla"} />*/}

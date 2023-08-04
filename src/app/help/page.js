@@ -4,6 +4,7 @@ import React, { useState } from "react";
 import Link from "next/link";
 import Login from "@/app/components/Login_comp/Login";
 import { State } from "../State";
+import withAuth from "@/app/components/withAuth/withAuth";
 
 const Help = () => {
   const [name, setName] = useState(State.user.profile.name.get());
@@ -32,4 +33,5 @@ const Help = () => {
     </>
   );
 };
-export default Help;
+
+export default withAuth(Help);
