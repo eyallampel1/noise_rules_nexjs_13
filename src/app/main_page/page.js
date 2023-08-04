@@ -11,6 +11,25 @@ import { State } from "../State";
 const Main_page = () => {
   const [tableData, setTableData] = useState(State.noiseData.noiseRules.get());
 
+  const cleanResponse = (response) => {
+    return response.filter((row) => {
+      // Check for rows with all null or empty properties
+      if (Object.values(row).every((value) => value == null || value === "")) {
+        return false;
+      }
+
+      // Check for rows that start with "index" or "Constraint class"
+      if (
+        row.constraintClassName.trim().toLowerCase() === "index" ||
+        row.constraintClassName.trim().toLowerCase() === "constraint class"
+      ) {
+        return false;
+      }
+
+      return true; // Keep the row if none of the conditions are met
+    });
+  };
+
   const handleTableData = (data) => {
     setTableData(data);
   };
@@ -23,13 +42,16 @@ const Main_page = () => {
 
     reader.onload = (e) => {
       const lines = e.target.result.split("\n");
-      const newTableData = lines.slice(1).map((line) => {
+      let newTableData = lines.slice(1).map((line) => {
         const [constraintClassName, inClassNoiseRule, outOfClassNoiseRule] =
           line.split(" ");
         return { constraintClassName, inClassNoiseRule, outOfClassNoiseRule };
       });
 
-      console.log("Parsed table data:", newTableData); // Log the parsed table data
+      // Clean the table data using the cleanResponse function
+      newTableData = cleanResponse(newTableData);
+
+      console.log("Parsed and cleaned table data:", newTableData); // Log the parsed and cleaned table data
 
       // Set the table data in Legend State
       State.noiseData.noiseRules.set(newTableData);
@@ -79,15 +101,7 @@ const Main_page = () => {
             Noise Rules DB
           </Button>
         </div>
-        <FileUploader
-          onTableDataChange={handleTableData}
-          tableData={tableData}
-        />
-        {/*<div className="flex container">*/}
-        {/*  <TextField id="outlined-basic" label="Outlined" variant="outlined" />*/}
-        {/*  <Button variant="contained">Browse</Button>*/}
-        {/*</div>*/}
-        <div className="flex justify-center items-center space-x-4 container mt-4">
+        <div className="flex justify-center items-center space-x-4 container mb-10">
           <input
             type="file"
             id="loadTable"
@@ -97,7 +111,7 @@ const Main_page = () => {
           />
           <label htmlFor="loadTable">
             <Button variant="contained" component="span">
-              Load Table
+              Load .txt Table
             </Button>
           </label>
           <Button variant="contained" onClick={saveTableDataAsTextFile}>
@@ -105,6 +119,15 @@ const Main_page = () => {
           </Button>
           <Button variant="contained">Send To CES</Button>
         </div>
+        <FileUploader
+          onTableDataChange={handleTableData}
+          tableData={tableData}
+        />
+
+        {/*<div className="flex container">*/}
+        {/*  <TextField id="outlined-basic" label="Outlined" variant="outlined" />*/}
+        {/*  <Button variant="contained">Browse</Button>*/}
+        {/*</div>*/}
       </div>
     </>
   );
