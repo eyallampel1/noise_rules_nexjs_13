@@ -32,15 +32,26 @@ const Main_page = () => {
   };
 
   const sendTableToServer = () => {
-    axios
-      .post("http://localhost:4900/sendTableToServer", tableData)
+    axios({
+      url: "http://localhost:4900/sendTableToServer",
+      method: "POST",
+      responseType: "blob", // Important
+      data: tableData,
+    })
       .then((response) => {
-        console.log("Response:", response);
-        // You can do something with the response here, like showing a success message
+        const url = window.URL.createObjectURL(new Blob([response.data]));
+        const link = document.createElement("a");
+        link.href = url;
+        const date = new Date();
+        const timestampStr = `${date.getFullYear()}_${
+          date.getMonth() + 1
+        }_${date.getDate()}_hour_${date.getHours()}_${date.getMinutes()}_${date.getSeconds()}`;
+        link.setAttribute("download", `file_${timestampStr}.zip`); // or any other extension
+        document.body.appendChild(link);
+        link.click();
       })
       .catch((error) => {
-        console.error("Error:", error);
-        // You can do something with the error here, like showing an error message
+        console.error(error);
       });
   };
 

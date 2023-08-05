@@ -98,6 +98,8 @@ const path = require("path");
 app.post("/sendTableToServer", async (req, res) => {
   const tableData = req.body; // This is the data sent from the client
 
+  console.log("Table data:", tableData); // Log the table data
+
   // You can do something with tableData here, if necessary
 
   exec("./generateFiles.sh", async (error, stdout, stderr) => {
@@ -109,18 +111,31 @@ app.post("/sendTableToServer", async (req, res) => {
     }
 
     try {
-      // After the script completes, we will assume that it has created files named 'file.bat' and 'file.vbs'
+      // After the script completes, it outputs the name of the zip file to zip_output.txt
+      const zipFileName = await fs.readFile("zip_output.txt", "utf8");
 
-      // Read the files
-      const batFileData = await fs.readFile("file.bat");
-      const vbsFileData = await fs.readFile("file.vbs");
+      // The path to the zip file
+      const zipFilePath = path.join(__dirname, "uploads", zipFileName.trim());
 
-      // Send the file data back to the client in the response
-      res.send({
-        success: true,
-        message: "Script executed and files generated",
-        batFile: batFileData.toString("base64"), // We will send the file data as base64 strings
-        vbsFile: vbsFileData.toString("base64"),
+      // Use the res.download() function to send the file
+
+      // Use the res.download() function to send the file
+      res.download(zipFilePath, async (err) => {
+        if (err) {
+          console.error(`Download error: ${err}`);
+          return res.status(500).send({
+            success: false,
+            message: "Error downloading file",
+            error: err,
+          });
+        } else {
+          // Optional: Delete the zip file after sending it to the client
+          try {
+            await fs.unlink(zipFilePath);
+          } catch (err) {
+            console.error(`Error deleting file: ${err}`);
+          }
+        }
       });
     } catch (err) {
       console.error("Error reading file:", err);
