@@ -92,7 +92,6 @@ const Main_page = () => {
   };
 
   const handleTableData = (data) => {
-    setTableVisible(true);
     setTableData(data);
   };
 
@@ -141,6 +140,7 @@ const Main_page = () => {
     };
 
     reader.readAsText(file);
+    setTableVisible(true);
   };
 
   const saveTableDataAsTextFile = () => {
@@ -230,11 +230,9 @@ const Main_page = () => {
           <Button variant="contained" onClick={saveTableDataAsTextFile}>
             Save Table
           </Button>
-          {tableVisible && (
-            <Button variant="contained" onClick={() => setIsDialogOpen(true)}>
-              Send To CES
-            </Button>
-          )}
+          <Button variant="contained" onClick={() => setIsDialogOpen(true)}>
+            Send To CES
+          </Button>
         </div>
 
         <FileUploader
@@ -245,11 +243,6 @@ const Main_page = () => {
         <div className="flex justify-center items-center space-x-4 container mt-10 ">
           {/* ... other buttons ... */}
 
-          {tableVisible && (
-            <Button variant="contained" onClick={() => setIsDialogOpen(true)}>
-              Send To CES
-            </Button>
-          )}
           <Dialog open={isDialogOpen} onClose={() => setIsDialogOpen(false)}>
             <DialogTitle>Enter Project Path</DialogTitle>
             <DialogContent>

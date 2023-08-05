@@ -1,5 +1,4 @@
 #!/bin/sh
-
 # Path to the directory where you want to create the files and the zip file
 dir="uploads"
 
