@@ -1,6 +1,5 @@
 "use client";
 import FileSaver from "file-saver";
-import TextField from "@mui/material/TextField";
 import Button from "@mui/material/Button";
 import FileUploader from "@/app/components/BrowseAndSend/BrowseAndSend";
 import withAuth from "../components/withAuth/withAuth";
@@ -8,10 +7,19 @@ import React, { useState } from "react";
 import { useRouter } from "next/navigation";
 import { State } from "../State";
 import axios from "axios";
+import parallelismRules from "@/app/noise_rules_db/noiseRulesData";
+import Dialog from "@mui/material/Dialog";
+import DialogActions from "@mui/material/DialogActions";
+import DialogContent from "@mui/material/DialogContent";
+import DialogContentText from "@mui/material/DialogContentText";
+import DialogTitle from "@mui/material/DialogTitle";
+import TextField from "@mui/material/TextField";
 
 const Main_page = () => {
   const [tableData, setTableData] = useState(State.noiseData.noiseRules.get());
-
+  const [isDialogOpen, setIsDialogOpen] = useState(false);
+  const [userProvidedPath, setUserProvidedPath] = useState("");
+  const [tableVisible, setTableVisible] = useState(false);
   const cleanResponse = (response) => {
     return response.filter((row) => {
       // Check for rows with all null or empty properties
@@ -31,12 +39,40 @@ const Main_page = () => {
     });
   };
 
-  const sendTableToServer = () => {
+  const handleUserProvidedPathChange = (event) => {
+    setUserProvidedPath(event.target.value);
+  };
+
+  const handleSendToCES = () => {
+    // Check if the input is empty
+    if (!userProvidedPath || userProvidedPath.trim() === "") {
+      alert("Please provide a file path.");
+      return;
+    }
+
+    // Check if the input has a slash, indicating a directory structure
+    if (!userProvidedPath.includes("/") && !userProvidedPath.includes("\\")) {
+      alert("Please provide a valid file path.");
+      return;
+    }
+
+    if (!userProvidedPath.endsWith(".prj")) {
+      alert("Please provide a valid .prj file path.");
+      return; // Exit the function early if the check fails
+    }
+
+    const data = {
+      tableData: tableData,
+      parallelismRules: parallelismRules,
+      projectPath: userProvidedPath,
+    };
+
+    setIsDialogOpen(false); // Close the dialog
     axios({
       url: "http://localhost:4900/sendTableToServer",
       method: "POST",
       responseType: "blob", // Important
-      data: tableData,
+      data,
     })
       .then((response) => {
         const url = window.URL.createObjectURL(new Blob([response.data]));
@@ -56,6 +92,7 @@ const Main_page = () => {
   };
 
   const handleTableData = (data) => {
+    setTableVisible(true);
     setTableData(data);
   };
 
@@ -107,6 +144,11 @@ const Main_page = () => {
   };
 
   const saveTableDataAsTextFile = () => {
+    if (!tableVisible) {
+      alert("No table to save");
+      return;
+    }
+
     // Determine the maximum length of each column
     let maxLengthConstraintClassName = "Constraint Class".length;
     let maxLengthInClassNoiseRule = "In class Noise Rule".length;
@@ -159,11 +201,7 @@ const Main_page = () => {
     <>
       <div>
         <h1>main page</h1>
-        <div
-          className={
-            "flex justify-center items-center space-x-20 container mb-10"
-          }
-        >
+        <div className="flex justify-center items-center space-x-20 container mb-10">
           <Button
             variant="contained"
             onClick={() => {
@@ -175,7 +213,8 @@ const Main_page = () => {
             Noise Rules DB
           </Button>
         </div>
-        <div className="flex justify-center items-center space-x-4 container mb-10">
+
+        <div className="flex justify-center items-center space-x-4 container mb-10 mt-3">
           <input
             type="file"
             id="loadTable"
@@ -191,19 +230,53 @@ const Main_page = () => {
           <Button variant="contained" onClick={saveTableDataAsTextFile}>
             Save Table
           </Button>
-          <Button variant="contained" onClick={sendTableToServer}>
-            Send To CES
-          </Button>
+          {tableVisible && (
+            <Button variant="contained" onClick={() => setIsDialogOpen(true)}>
+              Send To CES
+            </Button>
+          )}
         </div>
+
         <FileUploader
           onTableDataChange={handleTableData}
           tableData={tableData}
         />
 
-        {/*<div className="flex container">*/}
-        {/*  <TextField id="outlined-basic" label="Outlined" variant="outlined" />*/}
-        {/*  <Button variant="contained">Browse</Button>*/}
-        {/*</div>*/}
+        <div className="flex justify-center items-center space-x-4 container mt-10 ">
+          {/* ... other buttons ... */}
+
+          {tableVisible && (
+            <Button variant="contained" onClick={() => setIsDialogOpen(true)}>
+              Send To CES
+            </Button>
+          )}
+          <Dialog open={isDialogOpen} onClose={() => setIsDialogOpen(false)}>
+            <DialogTitle>Enter Project Path</DialogTitle>
+            <DialogContent>
+              <DialogContentText>
+                Please enter the full path to the project file (.prj):
+              </DialogContentText>
+              <TextField
+                autoFocus
+                margin="dense"
+                id="project-path"
+                label="Project Path"
+                type="text"
+                fullWidth
+                value={userProvidedPath}
+                onChange={handleUserProvidedPathChange}
+              />
+            </DialogContent>
+            <DialogActions>
+              <Button onClick={() => setIsDialogOpen(false)} color="primary">
+                Cancel
+              </Button>
+              <Button onClick={handleSendToCES} color="primary">
+                Send
+              </Button>
+            </DialogActions>
+          </Dialog>
+        </div>
       </div>
     </>
   );

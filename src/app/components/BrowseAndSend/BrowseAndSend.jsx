@@ -122,7 +122,7 @@ function FileUpload({ onTableDataChange, tableData: externalTableData }) {
       <div className={"flex justify-center items-center space-x-20 container"}>
         <Input type="file" onChange={onFileChange} accept=".csv" />
         <Button variant="contained" onClick={onFileUpload}>
-          Upload
+          Send .CSV to Server
         </Button>
       </div>
       {localTableData && localTableData.length > 0 && (
