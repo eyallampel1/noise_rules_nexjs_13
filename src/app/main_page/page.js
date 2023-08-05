@@ -7,6 +7,7 @@ import withAuth from "../components/withAuth/withAuth";
 import React, { useState } from "react";
 import { useRouter } from "next/navigation";
 import { State } from "../State";
+import axios from "axios";
 
 const Main_page = () => {
   const [tableData, setTableData] = useState(State.noiseData.noiseRules.get());
@@ -28,6 +29,19 @@ const Main_page = () => {
 
       return true; // Keep the row if none of the conditions are met
     });
+  };
+
+  const sendTableToServer = () => {
+    axios
+      .post("http://localhost:4900/sendTableToServer", tableData)
+      .then((response) => {
+        console.log("Response:", response);
+        // You can do something with the response here, like showing a success message
+      })
+      .catch((error) => {
+        console.error("Error:", error);
+        // You can do something with the error here, like showing an error message
+      });
   };
 
   const handleTableData = (data) => {
@@ -166,7 +180,9 @@ const Main_page = () => {
           <Button variant="contained" onClick={saveTableDataAsTextFile}>
             Save Table
           </Button>
-          <Button variant="contained">Send To CES</Button>
+          <Button variant="contained" onClick={sendTableToServer}>
+            Send To CES
+          </Button>
         </div>
         <FileUploader
           onTableDataChange={handleTableData}

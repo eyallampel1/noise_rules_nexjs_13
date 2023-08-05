@@ -1,15 +1,6 @@
 [
   {
-    "constraintClassName": "Constraint class"
-  },
-  {
     "constraintClassName": "POWER"
-  },
-  {
-    "constraintClassName": "POWER"
-  },
-  {
-    "constraintClassName": "POWER/VBUS"
   },
   {
     "constraintClassName": "POWER/VBUS"
@@ -18,16 +9,7 @@
     "constraintClassName": "POWER/3V3_AUX"
   },
   {
-    "constraintClassName": "POWER/3V3_AUX"
-  },
-  {
     "constraintClassName": "POWER/GND"
-  },
-  {
-    "constraintClassName": "POWER/GND"
-  },
-  {
-    "constraintClassName": "POWER/PSOC_POWER"
   },
   {
     "constraintClassName": "POWER/PSOC_POWER"
@@ -36,16 +18,7 @@
     "constraintClassName": "POWER/CC"
   },
   {
-    "constraintClassName": "POWER/CC"
-  },
-  {
     "constraintClassName": "POWER/I2C_OTHER_VOLTAGE"
-  },
-  {
-    "constraintClassName": "POWER/I2C_OTHER_VOLTAGE"
-  },
-  {
-    "constraintClassName": "POWER/FTDI_5V"
   },
   {
     "constraintClassName": "POWER/FTDI_5V"
@@ -54,16 +27,7 @@
     "constraintClassName": "FAST"
   },
   {
-    "constraintClassName": "FAST"
-  },
-  {
     "constraintClassName": "FAST/USB_2.0"
-  },
-  {
-    "constraintClassName": "FAST/USB_2.0"
-  },
-  {
-    "constraintClassName": "BUSES"
   },
   {
     "constraintClassName": "BUSES"
@@ -72,16 +36,7 @@
     "constraintClassName": "BUSES/I2C"
   },
   {
-    "constraintClassName": "BUSES/I2C"
-  },
-  {
     "constraintClassName": "BUSES/UART"
-  },
-  {
-    "constraintClassName": "BUSES/UART"
-  },
-  {
-    "constraintClassName": "BUSES/UART/LVTTL_PSOC_UART"
   },
   {
     "constraintClassName": "BUSES/UART/LVTTL_PSOC_UART"
@@ -90,16 +45,7 @@
     "constraintClassName": "BUSES/UART/CONNECTOR_UART_232"
   },
   {
-    "constraintClassName": "BUSES/UART/CONNECTOR_UART_232"
-  },
-  {
     "constraintClassName": "BUSES/UART/FTDI_UART"
-  },
-  {
-    "constraintClassName": "BUSES/UART/FTDI_UART"
-  },
-  {
-    "constraintClassName": "BUSES/PSOC_JTAG"
   },
   {
     "constraintClassName": "BUSES/PSOC_JTAG"
@@ -108,16 +54,7 @@
     "constraintClassName": "CRITICAL"
   },
   {
-    "constraintClassName": "CRITICAL"
-  },
-  {
     "constraintClassName": "CRITICAL/PSOC_SWITCH"
-  },
-  {
-    "constraintClassName": "CRITICAL/PSOC_SWITCH"
-  },
-  {
-    "constraintClassName": "CRITICAL/LDO_SET"
   },
   {
     "constraintClassName": "CRITICAL/LDO_SET"
@@ -126,31 +63,13 @@
     "constraintClassName": "CRITICAL/QSPI"
   },
   {
-    "constraintClassName": "CRITICAL/QSPI"
-  },
-  {
-    "constraintClassName": "CRITICAL/ANALOG"
-  },
-  {
     "constraintClassName": "CRITICAL/ANALOG"
   },
   {
     "constraintClassName": "CRITICAL/BCR_INIT_STATE_SELEC"
   },
   {
-    "constraintClassName": "CRITICAL/BCR_INIT_STATE_SELEC"
-  },
-  {
     "constraintClassName": "NOT_CRITICAL"
-  },
-  {
-    "constraintClassName": "NOT_CRITICAL"
-  },
-  {
-    "constraintClassName": "Index"
-  },
-  {
-    "constraintClassName": "Index"
   },
   {
     "constraintClassName": ""
