@@ -2,7 +2,7 @@
 import { makeStyles } from "@mui/styles";
 // import ReactPlayer from "react-player";
 import Button from "@mui/material/Button";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import MenuIcon from "@material-ui/icons/Menu";
 import SearchIcon from "@mui/icons-material/Search";
@@ -28,7 +28,7 @@ import {
 } from "@mui/material";
 import Grid from "@mui/material/Grid";
 
-import parallelismRules from "./noiseRulesData";
+import defaultParallelismRules from "./noiseRulesData";
 import withAuth from "@/app/components/withAuth/withAuth";
 
 const useStyles = makeStyles({
@@ -53,10 +53,20 @@ const NoiseRulesDB = () => {
 
   const [searchQuery, setSearchQuery] = useState("");
   const [hideOtherRows, setHideOtherRows] = useState(false);
-
+  const [parallelismRules, setParallelismRules] = useState([]);
   const filteredParallelismRules = parallelismRules.filter((rule) =>
     rule.name.toLowerCase().includes(searchQuery.toLowerCase()),
   );
+
+  useEffect(() => {
+    // Update the rules when the component mounts
+    setParallelismRules(defaultParallelismRules);
+  }, []);
+
+  // Add this useEffect hook inside your component
+  useEffect(() => {
+    console.log("Current parallelismRules:", parallelismRules);
+  }, [parallelismRules]); // This will run every time parallelismRules changes
 
   const handleClick = () => {
     setOpen(true);
@@ -110,6 +120,8 @@ const NoiseRulesDB = () => {
     setOpen2(false);
   };
 
+  const [rules, setRules] = useState(parallelismRules); // Use state to store your rules
+
   const handleFileSelect = (event) => {
     const file = event.target.files[0];
     if (file) {
@@ -122,7 +134,7 @@ const NoiseRulesDB = () => {
           const customRules = JSON.parse(e.target.result);
 
           // Update your rules with the custom data
-          updateRules(customRules);
+          setParallelismRules(customRules); // set state here
         } catch (error) {
           console.error("Error reading or parsing file:", error);
         }
