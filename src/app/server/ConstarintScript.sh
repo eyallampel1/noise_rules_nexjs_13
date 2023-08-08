@@ -1,5 +1,4 @@
 #!/bin/sh
-
 len=$#
 if [ $len -lt 1 ]; then
     echo "Usage: $0 <path to constraint file>"
@@ -22,3 +21,5 @@ mv out88.txt out.txt
 rm out66.txt out77.txt
 
 cat out.txt
+
+sh ./lowestHir.sh

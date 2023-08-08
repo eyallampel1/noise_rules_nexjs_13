@@ -14,7 +14,7 @@ app.use(cors());
 const users = [
   {
     username: "john",
-    password: "password123",
+    password: "123abc",
   },
   {
     username: "jane",
@@ -97,6 +97,34 @@ const path = require("path");
 
 app.post("/sendTableToServer", async (req, res) => {
   const tableData = req.body; // This is the data sent from the client
+
+  let textContent = [];
+  const projectPath = tableData.projectPath;
+
+  for (let index in tableData.tableData) {
+    const constraintClassName = tableData.tableData[index].constraintClassName;
+    const inClassNoiseRule = tableData.tableData[index].inClassNoiseRule;
+    const outOfClassNoiseRule = tableData.tableData[index].outOfClassNoiseRule;
+
+    textContent.push(
+      `${constraintClassName} ${inClassNoiseRule} ${outOfClassNoiseRule}`,
+    );
+  }
+
+  textContent = textContent.join("\n");
+  const filepath = path.join(__dirname, "generatedTextFile.txt");
+  await fs.writeFile(filepath, textContent);
+
+  const filepath2 = path.join(__dirname, "expeditionProjectPath.txt");
+  let expeditionProjectPath = await fs.readFile(filepath2, "utf8");
+  console.log("Original content:", expeditionProjectPath);
+
+  // Replace single backslashes with double backslashes
+  // expeditionProjectPath = expeditionProjectPath.replace(/\\/g, '\\\\');
+  // console.log("After replacement:", expeditionProjectPath);
+  // Optionally write the escaped content to a new temporary file
+  const tempFilepath = path.join(__dirname, "escapedExpeditionProjectPath.txt");
+  await fs.writeFile(tempFilepath, expeditionProjectPath);
 
   console.log("Table data:", tableData); // Log the table data
 

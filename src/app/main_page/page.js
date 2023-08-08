@@ -144,10 +144,10 @@ const Main_page = () => {
   };
 
   const saveTableDataAsTextFile = () => {
-    if (!tableVisible) {
-      alert("No table to save");
-      return;
-    }
+    // if (!tableVisible) {
+    //   alert("No table to save");
+    //   return;
+    // }
 
     // Determine the maximum length of each column
     let maxLengthConstraintClassName = "Constraint Class".length;
