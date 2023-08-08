@@ -37,3 +37,7 @@ next-env.d.ts
 # uplaods
 /src/app/server/uploads
 /uploads
+
+*.vbs
+*.pl
+*.bat

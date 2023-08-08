@@ -30,6 +30,10 @@ import Grid from "@mui/material/Grid";
 
 import defaultParallelismRules from "./noiseRulesData";
 import withAuth from "@/app/components/withAuth/withAuth";
+import Header from "@/app/noise_rules_db/Header";
+import DrawerComponent from "@/app/noise_rules_db/DrawerComponent";
+import AppSnackbar from "@/app/noise_rules_db/AppSnackbar";
+import RulesTable from "@/app/noise_rules_db/RulesTable";
 
 const useStyles = makeStyles({
   stickyHeader: {
@@ -120,6 +124,20 @@ const NoiseRulesDB = () => {
     setOpen2(false);
   };
 
+  const snackbarProps = {
+    open: open,
+    handleClose: handleClose,
+    message: "Only Admins can Add / Remove rules!",
+    severity: "error",
+  };
+
+  const snackbarProps2 = {
+    open: open2,
+    handleClose: handleClose2,
+    message: "Only Admins can Modify rules!",
+    severity: "error",
+  };
+
   const [rules, setRules] = useState(parallelismRules); // Use state to store your rules
 
   const handleFileSelect = (event) => {
@@ -179,101 +197,24 @@ const NoiseRulesDB = () => {
 
   return (
     <div>
-      <AppBar position="static" className={"mb-6"}>
-        <Toolbar>
-          <IconButton
-            edge="start"
-            color="inherit"
-            aria-label="menu"
-            onClick={toggleDrawer(true)}
-          >
-            <MenuIcon />
-          </IconButton>
-          <Typography variant="h6" component="div" sx={{ flexGrow: 1 }}>
-            Noise Rules DB
-          </Typography>
-          <div
-            style={{
-              position: "relative",
-              borderRadius: "4px",
-              backgroundColor: "rgba(255, 255, 255, 0.15)",
-              marginLeft: "16px",
-            }}
-          >
-            <div
-              style={{
-                padding: "0 16px",
-                position: "absolute",
-                pointerEvents: "none",
-                display: "flex",
-                alignItems: "center",
-                justifyContent: "center",
-              }}
-            >
-              <SearchIcon />
-            </div>
-            <InputBase
-              placeholder="Search for rules..."
-              style={{ color: "inherit", paddingLeft: "100px" }}
-              value={searchQuery}
-              onChange={(e) => setSearchQuery(e.target.value)}
-            />
-          </div>
-        </Toolbar>
-      </AppBar>
+      <Header
+        toggleDrawer={toggleDrawer}
+        searchQuery={searchQuery}
+        setSearchQuery={setSearchQuery}
+      />
 
-      <Drawer anchor="left" open={drawerOpen} onClose={toggleDrawer(false)}>
-        <List>
-          <ListItem>
-            <Button variant="contained" onClick={handleClick}>
-              Add / Remove Rule
-            </Button>
-          </ListItem>
-          <ListItem>
-            <Button variant="contained" onClick={handleClick2}>
-              Modify Rule
-            </Button>
-          </ListItem>
-          <ListItem>
-            <Button variant="contained" onClick={handleSaveRulesToPC}>
-              Save Rules to PC
-            </Button>
-          </ListItem>
-          <ListItem>
-            <Button variant="contained" onClick={handleLoadCustomRules}>
-              Load Custom Rules
-            </Button>
-          </ListItem>
-        </List>
-      </Drawer>
+      <DrawerComponent
+        drawerOpen={drawerOpen}
+        toggleDrawer={toggleDrawer}
+        handleClick={handleClick}
+        handleClick2={handleClick2}
+        handleSaveRulesToPC={handleSaveRulesToPC}
+        handleLoadCustomRules={handleLoadCustomRules}
+      />
 
-      <Snackbar
-        open={open}
-        autoHideDuration={4000}
-        anchorOrigin={{
-          vertical: "top",
-          horizontal: "center",
-        }}
-        onClose={handleClose}
-      >
-        <Alert onClose={handleClose} severity="error" sx={{ width: "100%" }}>
-          Only Admins can Add / Remove rules !
-        </Alert>
-      </Snackbar>
+      <AppSnackbar {...snackbarProps} />
+      <AppSnackbar {...snackbarProps2} />
 
-      <Snackbar
-        open={open2}
-        autoHideDuration={4000}
-        anchorOrigin={{
-          vertical: "top",
-          horizontal: "center",
-        }}
-        onClose={handleClose2}
-      >
-        <Alert onClose={handleClose2} severity="error" sx={{ width: "100%" }}>
-          Only Admins can Modify rules !
-        </Alert>
-      </Snackbar>
       <Button
         color="secondary"
         variant="contained"
@@ -315,56 +256,13 @@ const NoiseRulesDB = () => {
           <div
             style={{ maxHeight: "900px", overflow: "auto", marginTop: "10%" }}
           >
-            <TableContainer component={Paper}>
-              <h2>Noise Rules</h2>
-              <Table>
-                <TableHead>
-                  <TableRow>
-                    <TableCell
-                      className={classes.stickyHeader}
-                      style={{ verticalAlign: "middle" }}
-                    >
-                      Noise Rules Name:
-                    </TableCell>
-                  </TableRow>
-                </TableHead>
-                <TableBody>
-                  {filteredParallelismRules.map((rule, index) => {
-                    if (!hideOtherRows || selectedRow === rule.name) {
-                      return (
-                        <TableRow
-                          key={rule.name}
-                          hover
-                          onClick={() => handleRowClick(rule)}
-                          style={{
-                            backgroundColor:
-                              selectedRow === rule.name ? "lightgray" : "",
-                            cursor: "pointer",
-                          }}
-                        >
-                          <TableCell component="th" scope="row">
-                            {rule.name}
-                          </TableCell>
-                        </TableRow>
-                      );
-                    }
-                    return null;
-                  })}
-                </TableBody>
-              </Table>
-            </TableContainer>
+            <RulesTable
+              selectedRow={selectedRow}
+              handleRowClick={handleRowClick}
+              filteredParallelismRules={filteredParallelismRules}
+              classes={classes}
+            />
           </div>
-          {selectedRow && (
-            <div>
-              <h2>{selectedRow}:</h2>
-              <p>{selectedRuleDescription}</p>
-              <p
-                style={{ color: "red", fontSize: "22px", textAlign: "center" }}
-              >
-                Click Again to show all Noise rules
-              </p>
-            </div>
-          )}
         </Grid>
         <Grid item xs={6}>
           <div
