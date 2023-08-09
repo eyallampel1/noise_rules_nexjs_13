@@ -34,6 +34,8 @@ import Header from "@/app/noise_rules_db/Header";
 import DrawerComponent from "@/app/noise_rules_db/DrawerComponent";
 import AppSnackbar from "@/app/noise_rules_db/AppSnackbar";
 import RulesTable from "@/app/noise_rules_db/RulesTable";
+import ControlButtons from "@/app/noise_rules_db/ControlButtons";
+import RulesAndDetailTables from "@/app/noise_rules_db/RulesAndDetailTables";
 
 const useStyles = makeStyles({
   stickyHeader: {
@@ -215,125 +217,21 @@ const NoiseRulesDB = () => {
       <AppSnackbar {...snackbarProps} />
       <AppSnackbar {...snackbarProps2} />
 
-      <Button
-        color="secondary"
-        variant="contained"
-        onClick={() => router.push("/main_page")}
-      >
-        Return to main page
-      </Button>
-      <div
-        className={
-          "flex justify-center items-center space-x-20 container mb-10"
-        }
-      >
-        <input
-          type="file"
-          id="fileInput"
-          style={{ display: "none" }}
-          onChange={handleFileSelect}
-        />
-      </div>
+      <ControlButtons
+        router={router}
+        handleFileSelect={handleFileSelect}
+        searchQuery={searchQuery}
+        setSearchQuery={setSearchQuery}
+      />
 
-      <div className="mb-4">
-        <input
-          type="text"
-          placeholder="Search for rules..."
-          value={searchQuery}
-          onChange={(e) => setSearchQuery(e.target.value)}
-          style={{
-            width: "50%",
-            padding: "10px",
-            margin: "8px 0",
-            boxSizing: "border-box",
-            borderRadius: "4px",
-            border: "1px solid #ccc",
-          }}
-        />
-      </div>
-      <Grid container spacing={2}>
-        <Grid item xs={6}>
-          <div
-            style={{ maxHeight: "900px", overflow: "auto", marginTop: "10%" }}
-          >
-            <RulesTable
-              selectedRow={selectedRow}
-              handleRowClick={handleRowClick}
-              filteredParallelismRules={filteredParallelismRules}
-              classes={classes}
-            />
-          </div>
-        </Grid>
-        <Grid item xs={6}>
-          <div
-            style={{
-              display: "flex",
-              flexDirection: "column",
-              alignItems: "center",
-            }}
-          >
-            <TableContainer component={Paper}>
-              <h2>
-                Same layer trace segments for:
-                <span style={{ color: selectedRow ? "red" : "inherit" }}>
-                  {" "}
-                  {selectedRow || "None selected"}{" "}
-                </span>
-              </h2>
-              <Table>
-                <TableHead style={{ backgroundColor: "lightgreen" }}>
-                  <TableRow>
-                    <TableCell>Edge/Edge trace segments</TableCell>
-                    <TableCell>Max Parallel Len (th)</TableCell>
-                  </TableRow>
-                </TableHead>
-                <TableBody>
-                  {sameLayerTraceSegments.map((row) => (
-                    <TableRow key={row.name}>
-                      <TableCell component="th" scope="row">
-                        {row.name}
-                      </TableCell>
-                      <TableCell>{row.maxParallel}</TableCell>
-                    </TableRow>
-                  ))}
-                </TableBody>
-              </Table>
-            </TableContainer>
-            <TableContainer component={Paper}>
-              <h2>
-                Adjacent layer trace segments for:
-                <span style={{ color: selectedRow ? "red" : "inherit" }}>
-                  {" "}
-                  {selectedRow || "None selected"}{" "}
-                </span>
-              </h2>
-              <Table>
-                <TableHead style={{ backgroundColor: "lightgreen" }}>
-                  <TableRow>
-                    <TableCell>Edge/Edge trace segments</TableCell>
-                    <TableCell>Max Parallel Len (th)</TableCell>
-                  </TableRow>
-                </TableHead>
-                <TableBody>
-                  {adjacentLayerTraceSegments.map((row) => (
-                    <TableRow key={row.name}>
-                      <TableCell component="th" scope="row">
-                        {row.name}
-                      </TableCell>
-                      <TableCell>{row.maxParallel}</TableCell>
-                    </TableRow>
-                  ))}
-                </TableBody>
-              </Table>
-            </TableContainer>
-          </div>
-        </Grid>
-      </Grid>
-      <div
-        className={
-          "flex justify-center items-center space-x-20 container mb-10"
-        }
-      ></div>
+      <RulesAndDetailTables
+        selectedRow={selectedRow}
+        handleRowClick={handleRowClick}
+        filteredParallelismRules={filteredParallelismRules}
+        classes={classes}
+        sameLayerTraceSegments={sameLayerTraceSegments}
+        adjacentLayerTraceSegments={adjacentLayerTraceSegments}
+      />
 
       {/* <div>*/}
       {/*   <ReactPlayer url="example.mp4" controls />*/}
