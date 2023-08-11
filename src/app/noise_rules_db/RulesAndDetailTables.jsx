@@ -9,7 +9,7 @@ import {
   TableCell,
   TableBody,
 } from "@mui/material";
-import RulesTable from "./RulesTable"; // Assuming RulesTable is in the same directory
+import RulesTable from "./RulesTable";
 
 const RulesAndDetailTables = ({
   selectedRow,
