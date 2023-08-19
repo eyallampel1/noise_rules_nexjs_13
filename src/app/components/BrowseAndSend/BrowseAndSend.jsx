@@ -15,6 +15,7 @@ import Typography from "@mui/material/Typography";
 import withAuth from "@/app/components/withAuth/withAuth";
 import { parallelismRules } from "../../noise_rules_db/noiseRulesData";
 import Tooltip from "@mui/material/Tooltip";
+import { State } from "@/app/State";
 
 // Sample data for Autocomplete
 // Transform the parallelismRules into the format required for Autocomplete
@@ -87,7 +88,7 @@ function FileUpload({ onTableDataChange, tableData: externalTableData }) {
       formData.append("file", file);
 
       axios
-        .post("http://localhost:4900/upload", formData)
+        .post(`http://${State.user.profile.ip.get()}:4900/upload`, formData)
         .then((response) => {
           console.log(response);
           const cleanedResponse = cleanResponse(response.data.result); // Applying the clean function

@@ -14,6 +14,7 @@ import Typography from "@mui/material/Typography";
 import Container from "@mui/material/Container";
 import { createTheme, ThemeProvider } from "@mui/material/styles";
 import { useRouter } from "next/navigation";
+import { State } from "@/app/State";
 
 function Copyright(props) {
   return (
@@ -46,16 +47,19 @@ export default function SignIn() {
     event.preventDefault();
     const data = new FormData(event.currentTarget);
 
-    const response = await fetch("http://localhost:4900/api/auth", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
+    const response = await fetch(
+      `http://${State.user.profile.ip.get()}:4900/api/auth`,
+      {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          username: data.get("email"),
+          password: data.get("password"),
+        }),
       },
-      body: JSON.stringify({
-        username: data.get("email"),
-        password: data.get("password"),
-      }),
-    });
+    );
 
     if (response.ok) {
       const result = await response.json();

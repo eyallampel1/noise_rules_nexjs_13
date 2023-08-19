@@ -69,7 +69,7 @@ const Main_page = () => {
 
     setIsDialogOpen(false); // Close the dialog
     axios({
-      url: "http://localhost:4900/sendTableToServer",
+      url: `http://${State.user.profile.ip.get()}:4900/sendTableToServer`,
       method: "POST",
       responseType: "blob", // Important
       data,

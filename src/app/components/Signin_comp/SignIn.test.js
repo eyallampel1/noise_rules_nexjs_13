@@ -4,6 +4,7 @@ import { screen } from "@testing-library/react";
 import "@testing-library/jest-dom/extend-expect";
 import SignIn from "./SignIn";
 import userEvent from "@testing-library/user-event";
+import { State } from "@/app/State";
 
 // Create a mock router object
 const mockRouter = {
@@ -43,16 +44,19 @@ describe("SignIn", () => {
     userEvent.click(submitButton);
 
     // Add assertions to check if the fetch was called with the right parameters
-    expect(fetch).toBeCalledWith("http://localhost:4900/api/auth", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
+    expect(fetch).toBeCalledWith(
+      `http://${State.user.profile.ip.get()}:4900/api/auth`,
+      {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          username: "username",
+          password: "password",
+        }),
       },
-      body: JSON.stringify({
-        username: "username",
-        password: "password",
-      }),
-    });
+    );
 
     // You can add additional assertions to check how your component reacts to a successful login
     // For example, if it should navigate to a new page or show a success message

@@ -2,7 +2,7 @@
 
 import Login from "@/app/components/Login_comp/Login";
 import Signin from "@/app/components/Signin_comp/Signin";
-
+import React from "react";
 export default function Home() {
   return (
     <>
