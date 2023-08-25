@@ -230,7 +230,7 @@ Now changelog will become a dropdown menu with the respective links you pass ins
 
 ### Output
 
-![dropdown-menu](https://user-images.githubusercontent.com/62628408/201539670-330a0e0f-ed81-46b0-87cf-0d2b0b0c387b.png)
+![dropdown-menu](./Clipchamp.mp4)
 
 ## Social Icons
 
