@@ -1,18 +1,19 @@
 ![banner](./How_to_use_this_app.png)
 
-# How to build modern docs with VitePress
+# How to Use Noise Rule App ?
 
 ::: info
 Documentation is a crucial aspect of software development that is often neglected by developers due to the hassle of
-maintaining one, or even choosing the right tools to use. This is why it's important to use tools that simplify this
-process. In this tutorial, you'll learn how to build a complete docs site quickly by utilizing a modern tool called,
-VitePress.
+maintaining one. So if I took the time to write It,
+<br>Then it must be worth it. 😅<br>
+In this tutorial, you'll learn how to use the Noise Rule App to minimize CrossTalk in your design.
 :::
 
-## Definition
+## Definition <NoiseRuleAppLink/>
 
-[VitePress](https://vitepress.vuejs.org/) is a simple and performant static site generator built on top
-of [Vite](https://vitejs.dev) for creating docs in a matter of minutes. It is powered by [Vuejs](https://vuejs.org/),
+[Noise Rule App](http://localhost:3000) is a simple and performant web tool built on top
+of [React](https://react.dev) for pushing Noise rules to your Xpedition Constraint manager project.<br>
+It is powered by a [React Client](https://react.dev) and a [NodeJS Server](https://nodejs.org/en/).<br>
 and Vite with built in customizable components. VitePress powers some popular documentation sites like
 Vuejs, [Vitest](https://vitest.dev/), [faker.js](https://fakerjs.dev/), and Vite itself.
 
@@ -40,18 +41,21 @@ cd project-name
 Next you need to initialize with your preferred package manager. I'll be using NPM for the rest of this guide.
 
 ```bash
-npm init
-// or use this command if you want to skip all the questions
-npm init -y
+How To export .CSV file ?
+File -> Export -> Constraints to CSV
 ```
+<div class="gifClass" >
+<img src="./Export_to_CSV.gif" width="100%" >
+</div>
 
+```bash
 If you used the first command, you'll be prompted with certain questions, complete them as appropriate. After a
 successful operation, you should have a package.json file in your root directory; This is where the VitePress dev
 dependency will be installed.
 
-## Step. 2: Install VitePress
+## Step. 2: Export Constraint manager to CSV
 
-Next step is to add VitePress and Vue as dev dependencies to your project.
+Next step is to export .csv file from Expedition constraint Manager.
 
 ```bash
 npm install vue vitepress --save-dev
@@ -230,7 +234,7 @@ Now changelog will become a dropdown menu with the respective links you pass ins
 
 ### Output
 
-![dropdown-menu](https://user-images.githubusercontent.com/62628408/201539670-330a0e0f-ed81-46b0-87cf-0d2b0b0c387b.png)
+![dropdown-menu](./Clipchamp.mp4)
 
 ## Social Icons
 
@@ -368,7 +372,7 @@ Of course, images are not left out.
 
 ### Output
 
-![page-routing](https://user-images.githubusercontent.com/62628408/201539985-9308aaff-e98b-44e0-ad48-e990e788fd12.gif)
+![page-routing](./Export_to_CSV.gif)
 
 Great! You've set-up the docs, added a navigation menu with dropdown feature, added a sidebar, and customized the links
 to navigate to different pages. Next up, let's work on the home page.

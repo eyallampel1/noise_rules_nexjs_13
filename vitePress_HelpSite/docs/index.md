@@ -4,33 +4,33 @@ layout: home
 # Hero section
 hero:
   name: Noise Rules
-  text: Static docs template built with VitePress.
+  text: App to Push Noise Rules to Expedition Constraint Manager .
   image:
     src: /orange_a_captivating_digital_scene.svg
-    alt: Adocs logo
-  tagline: A free to use template for creating docs for your projects
+    alt: Lampel logo
+  tagline: The end Goal is to minimize CrossTalk Between our aggressor and victim pairs.
   actions:
     - theme: brand
-      text: Get Started
-      link: /guide
+      text: Run App
+      link: http://localhost:3000
     - theme: alt
-      text: View on GitHub
-      link: https://github.com/Evavic44/adocs
+      text: View Guide
+      link: /guide
 
 # Features section
 features:
   - icon: ⚡️
-    title: Adocs, The DX that can't be beat
-    details: Lorem ipsum...
+    title: Fast, This Job used to take days and now it takes minutes.
+    details: fast...
   - icon: 🎉
-    title: Power of Vue meets Markdown
-    details: Lorem ipsum...
+    title: Power of Web meets Expedition
+    details: Reactive app...
   - icon: 🔥
     title: Simple and minimal, always
-    details: Lorem ipsum...
+    details: Simple...
   - icon: 🎀
-    title: Stylish and cool
-    details: Lorem ipsum...
+    title: Well documented with detailed guides
+    details: Well documented...
 
 # Meta property
 head:
@@ -61,7 +61,7 @@ head:
 <!-- Custom home layout -->
 <div class="custom-layout">
   <h1>🤞+ 🗣️ = ❓</h1>
-  <h1>Custom Layout</h1>
-  <p>This section was added using plain HTML and CSS.</p>
+  <h1>Noise Rule App</h1>
+  <p>If you want to start the app just click on the Run App button</p>
   <a href="http://localhost:3000" target="_blank" class="btn">Run App</a>
 </div>
