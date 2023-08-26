@@ -16,6 +16,7 @@ export default defineConfig({
         siteTitle: "Noise Rule App",
         // Navbar Link
         nav: [
+            {text: "Home", link: "/"},
             {text: "About", link: "/about"},
             {text: "Contact", link: "/contact"},
             {text: "Guide", link: "/guide"},
@@ -48,7 +49,7 @@ export default defineConfig({
                 text: "Section A",
                 collapsible: true,
                 items: [
-                    {text: "Introduction", link: "/introduction"},
+                    {text: "Introduction", link: "/guide.html#step-1-create-a-new-project"},
                     {text: "Getting Started", link: "/getting-started"},
                 ],
             },
@@ -70,7 +71,7 @@ export default defineConfig({
             },
         ],
         footer: {
-            copyright: "Copyright © Eyal Lampel 2023- Noise Ruels App",
+            copyright: "Copyright © Eyal Lampel 2023- Noise Rules App",
         },
         markdown: {
             theme: "material-palenight",

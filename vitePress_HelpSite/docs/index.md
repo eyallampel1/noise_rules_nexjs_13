@@ -7,15 +7,15 @@ hero:
   text: App to Push Noise Rules to Expedition Constraint Manager .
   image:
     src: /orange_a_captivating_digital_scene.svg
-    alt: Adocs logo
+    alt: Lampel logo
   tagline: The end Goal is to minimize CrossTalk Between our aggressor and victim pairs.
   actions:
     - theme: brand
       text: Run App
-      link: /guide
+      link: http://localhost:3000
     - theme: alt
       text: View Guide
-      link: https://github.com/Evavic44/adocs
+      link: /guide
 
 # Features section
 features:

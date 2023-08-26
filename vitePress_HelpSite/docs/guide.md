@@ -1,18 +1,19 @@
 ![banner](./How_to_use_this_app.png)
 
-# How to build modern docs with VitePress
+# How to Use Noise Rule App ?
 
 ::: info
 Documentation is a crucial aspect of software development that is often neglected by developers due to the hassle of
-maintaining one, or even choosing the right tools to use. This is why it's important to use tools that simplify this
-process. In this tutorial, you'll learn how to build a complete docs site quickly by utilizing a modern tool called,
-VitePress.
+maintaining one. So if I took the time to write It,
+<br>Then it must be worth it. 😅<br>
+In this tutorial, you'll learn how to use the Noise Rule App to minimize CrossTalk in your design.
 :::
 
-## Definition
+## Definition <NoiseRuleAppLink/>
 
-[VitePress](https://vitepress.vuejs.org/) is a simple and performant static site generator built on top
-of [Vite](https://vitejs.dev) for creating docs in a matter of minutes. It is powered by [Vuejs](https://vuejs.org/),
+[Noise Rule App](http://localhost:3000) is a simple and performant web tool built on top
+of [React](https://react.dev) for pushing Noise rules to your Xpedition Constraint manager project.<br>
+It is powered by a [React Client](https://react.dev) and a [NodeJS Server](https://nodejs.org/en/).<br>
 and Vite with built in customizable components. VitePress powers some popular documentation sites like
 Vuejs, [Vitest](https://vitest.dev/), [faker.js](https://fakerjs.dev/), and Vite itself.
 
