@@ -40,18 +40,21 @@ cd project-name
 Next you need to initialize with your preferred package manager. I'll be using NPM for the rest of this guide.
 
 ```bash
-npm init
-// or use this command if you want to skip all the questions
-npm init -y
+How To export .CSV file ?
+File -> Export -> Constraints to CSV
 ```
+<div class="gifClass" >
+<img src="./Export_to_CSV.gif" width="100%" >
+</div>
 
+```bash
 If you used the first command, you'll be prompted with certain questions, complete them as appropriate. After a
 successful operation, you should have a package.json file in your root directory; This is where the VitePress dev
 dependency will be installed.
 
-## Step. 2: Install VitePress
+## Step. 2: Export Constraint manager to CSV
 
-Next step is to add VitePress and Vue as dev dependencies to your project.
+Next step is to export .csv file from Expedition constraint Manager.
 
 ```bash
 npm install vue vitepress --save-dev
@@ -368,7 +371,7 @@ Of course, images are not left out.
 
 ### Output
 
-![page-routing](https://user-images.githubusercontent.com/62628408/201539985-9308aaff-e98b-44e0-ad48-e990e788fd12.gif)
+![page-routing](./Export_to_CSV.gif)
 
 Great! You've set-up the docs, added a navigation menu with dropdown feature, added a sidebar, and customized the links
 to navigate to different pages. Next up, let's work on the home page.
