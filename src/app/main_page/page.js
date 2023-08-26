@@ -20,6 +20,9 @@ const Main_page = () => {
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const [userProvidedPath, setUserProvidedPath] = useState("");
   const [tableVisible, setTableVisible] = useState(false);
+  const [tableLoaded, setLoadedTable] = useState(
+    State.profile.loadedTable.get()
+  );
   const cleanResponse = (response) => {
     return response.filter((row) => {
       // Check for rows with all null or empty properties
@@ -116,12 +119,15 @@ const Main_page = () => {
         !lines[0]
           .trim()
           .match(
-            /^Constraint Class\s+In class Noise Rule\s+Out of Class Noise Rule$/,
+            /^Constraint Class\s+In class Noise Rule\s+Out of Class Noise Rule$/
           )
       ) {
         alert("Incorrect table txt format. Please upload a valid table.");
         return;
       }
+
+      State.profile.loadedTable.set(true);
+      setLoadedTable(true);
 
       let newTableData = lines.slice(1).map((line) => {
         const [constraintClassName, inClassNoiseRule, outOfClassNoiseRule] =
@@ -157,15 +163,15 @@ const Main_page = () => {
     tableData.forEach((row) => {
       maxLengthConstraintClassName = Math.max(
         maxLengthConstraintClassName,
-        (row.constraintClassName || "").length,
+        (row.constraintClassName || "").length
       );
       maxLengthInClassNoiseRule = Math.max(
         maxLengthInClassNoiseRule,
-        (row.inClassNoiseRule || "NONE").length,
+        (row.inClassNoiseRule || "NONE").length
       );
       maxLengthOutClassNoiseRule = Math.max(
         maxLengthOutClassNoiseRule,
-        (row.outOfClassNoiseRule || "NONE").length,
+        (row.outOfClassNoiseRule || "NONE").length
       );
     });
 
@@ -230,9 +236,11 @@ const Main_page = () => {
           <Button variant="contained" onClick={saveTableDataAsTextFile}>
             Save Table
           </Button>
-          <Button variant="contained" onClick={() => setIsDialogOpen(true)}>
-            Send To CES
-          </Button>
+          {tableLoaded && (
+            <Button variant="contained" onClick={() => setIsDialogOpen(true)}>
+              Send To CES
+            </Button>
+          )}
         </div>
 
         <FileUploader
