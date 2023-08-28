@@ -1,4 +1,4 @@
-![banner](./How_to_use_this_app.png)
+![banner](asset/How_to_use_this_app.png)
 
 # How to Use Noise Rule App ?
 
@@ -6,76 +6,176 @@
 Documentation is a crucial aspect of software development that is often neglected by developers due to the hassle of
 maintaining one. So if I took the time to write It,
 <br>Then it must be worth it. 😅<br>
-In this tutorial, you'll learn how to use the Noise Rule App to minimize CrossTalk in your design.
+I hope you find value in the effort taken to create this guide. <br>
+Dive in and discover how to
+leverage the Noise Rule App to mitigate CrossTalk in your designs.
 :::
 
-## Definition <NoiseRuleAppLink/>
+## What is the Noise Rule App? <NoiseRuleAppLink/>
 
-[Noise Rule App](http://localhost:3000) is a simple and performant web tool built on top
-of [React](https://react.dev) for pushing Noise rules to your Xpedition Constraint manager project.<br>
-It is powered by a [React Client](https://react.dev) and a [NodeJS Server](https://nodejs.org/en/).<br>
-and Vite with built in customizable components. VitePress powers some popular documentation sites like
-Vuejs, [Vitest](https://vitest.dev/), [faker.js](https://fakerjs.dev/), and Vite itself.
+The [Noise Rule App](http://localhost:3001) is a high-performance 
+web application engineered on the foundation of [React](https://react.dev). 
+Its purpose? To facilitate the easy integration of noise rules into 
+your Xpedition Constraint Manager project.<br> The app is a culmination 
+of a [React Client](https://react.dev) frontend and
+a [NodeJS Server](https://nodejs.org/en/) backend.
 
-## Prerequisites
 
-To follow along with this tutorial, you need to have a basic understanding of the following:
 
-- [Markdown](https://daringfireball.net/projects/markdown/) syntax
-- Brief understanding of NPM and Vite
+*Above is a snapshot of what you'll accomplish by the end of this guide.*
 
-Here's a screenshot of what you'll be building at the end of this tutorial.
+## Before We Begin: Prerequisites
 
-![final-works](https://user-images.githubusercontent.com/62628408/201538907-fe67b791-02c4-413c-ae3d-02635b53e20b.png)
+To maximize your experience with this tutorial, ensure you have:
 
-## Step. 1: Create a new project
+- Good knowledge with [Expedition Constraint Manager](https://daringfireball.net/projects/markdown/), specifically in constraint class insertion.
+- A basic grasp of hardware and schematic design.
 
-If you already have a folder created, you can skip this step to the next one if not, use the following command to create
-a project folder and move into the folder.
+## Step. 1: Finalize Your Xpedition Schematic
 
-```bash
-mkdir project-name
-cd project-name
-```
-
-Next you need to initialize with your preferred package manager. I'll be using NPM for the rest of this guide.
+It is not mandatory but its common practice to push your noise rules only [after]() you have finished your schematic
+design.
 
 ```bash
-How To export .CSV file ?
-File -> Export -> Constraints to CSV
+you can work with the app : 
+  1. Before staring the layout phase . 
+  2. After finising the layout phase .
 ```
+
+
+## Step. 2: Organize your Xpedition Constraint Manager Classes
+
+Your next move is to categorize every net within your design. Assign them to
+their respective Constraint Classes,
+ensuring the "All" group is `Empty` of any items.
+<br>
+<br>
+Here's a screenshot of how it looks like when all of your nets has been classified and the [All group is empty]().
+
+
+::: danger
+Note: `Only` put nets in their lowest hierarchy constraint classes.<br>
+Noise Rule app will `ignore` any nets That are not in their lowest hierarchy .
+:::
+
+
+### Avoid This:
+
+This example will show you what `not to do`
+
+```bash
+Constraint_Classes/
+├── MGT
+│   ├── `forbidden_net1` // [!code error]
+│   ├── `forbidden_net1` // [!code error]
+│   └── PCIE
+│       ├── `pcie_net1`
+│       └── `pcie_net2`
+├── CRITICAL
+│   └── CLOCKS
+│       └── `clock_net1`
+│       └── `clock_net2`
+├── POWER
+├── NOT_CRITICAL
+```
+
+in this example the [Noise Rule App](http://localhost:3001) will ignore `forbidden_net1` and `forbidden_net2`
+Because they are not in their lowest hierarchy possible
+
+### Aim For This:
+Nets at their `lowest Constraint class hierarchy`<br>
+This example will show you what you should do
+
+```bash
+Constraint_Classes/
+├── MGT
+│   └── PCIE
+│       ├── PCIE_BUS1
+│           └── `pcie_bus1_net1`
+│           └── `pcie_bus1_net2`
+│       ├── PCIE_BUS2
+│           └── `pcie_bus2_net1`
+│           └── `pcie_bus2_net2`
+├── CRITICAL
+│   └── CLOCKS
+│       └── `clock_net1`
+│       └── `clock_net2`
+├── POWER
+│   └── `power_net1`
+├── NOT_CRITICAL
+│   └── `not_critical_net1`
+```
+
+in this example the [Noise Rule App](http://localhost:3001) will take all your design nets and
+Apply noise rules to them
+
+## Step. 3: Generate a .CSV from Xpedition Constraint Manager
+
+To ensure accuracy and `prevent errors` that can arise from manual data entry. and help to Automation of the process ,
+you need to export the .CSV file from the Constraint Manager.
+
+```bash
+How To export .CSV file ? // [!code error]
+File -> Export -> Constraints to CSV // [!code warning]
+```
+
 <div class="gifClass" >
-<img src="./Export_to_CSV.gif" width="100%" >
+<img src="asset/Export_to_CSV.gif" width="100%" >
 </div>
 
-```bash
-If you used the first command, you'll be prompted with certain questions, complete them as appropriate. After a
-successful operation, you should have a package.json file in your root directory; This is where the VitePress dev
-dependency will be installed.
+## Step. 4: Integrate the .CSV into the Noise Rule App
 
-## Step. 2: Export Constraint manager to CSV
-
-Next step is to export .csv file from Expedition constraint Manager.
+Proceed to upload your .CSV file to the [Noise Rule App](http://localhost:3001)
 
 ```bash
-npm install vue vitepress --save-dev
-// or
-npm install -D vue vitepress
+How To Import a .CSV?
+1. Click on `Choose file` button. 
+2. Locate and select your Xpedition .CSV file.
+3. The app will display the lowest hierarchy constraint classes table.
 ```
+<div class="gifClass" >
+<img src="asset/load_csv_to_system.gif" width="100%" >
+</div>
 
-You've successfully installed VitePress and Vue and added it as a dev dependency. Now you can start creating creating
-your respective doc files, but before you do that, I believe it's essential to explain how VitePress works.
 
-## How does VitePress work?
+## Step. 5: Populate the Noise Rule Table
+Fill The Table with In class / Out of Class noise rules
+::: tip
+While filling the table you can use the mouse , but For a smoother experience  <br>
+Use the `TAB key` with the autocomplete feature alongside the `UP` and `DOWN` keys
+:::
 
-VitePress makes use of Markdown `.md` files for it's markup which is automatically converted into static HTML. In other
-for this to work, a special folder called `docs` is created in the root directory.
+The subsequent demonstration guides you through the process of filling the table
+Please see the `InClass` and `OutClass` [Noise Rules Table Explanation](http://localhost:3001) for detail
+explanation about each
+rule
 
-This folder behaves similar to the `pages` folder in NextJS, where any `.js` file created in the directory is
-automatically treated as a web page. In this case a file called `index.md` will be the treated as `index.html` and serve
-as the root of your docs template.
+<div class="gifClass" >
+<img src="asset/fill_table.gif" width="100%" >
+</div>
 
-Now you understand how that works, you can now create your respective doc files.
+
+
+::: tip
+You Can save your work for later if you don't have time to finish it all at once
+With the press of the button `SAVE TABLE` and then saving to a text file <br>
+Later at the initial load of the [Noise Rule App](http://localhost:3001) you can press the `LOAD TABLE` and
+selecting the text File you have saved before. note: rows that were not completed will be filled with the `NONE` rule
+
+:::
+
+## Step. 6: Send Completed Table to server (SEND TO CES)
+
+Once your table is complete, hit the `SEND TO CES` button. 
+You'll then be prompted to provide the full path to your .prj file,
+e.g., `D:\MY_AWESOME_PROJECT\MY_PROJECT.prj`.
+
+<div class="gifClass" >
+<img src="asset/send_to_ces.gif" width="100%" >
+</div>
+
+
+Upon confirming your input, the server will send back a zip file for you to download and save.
 
 ## Step 3. Create respective files
 
@@ -205,7 +305,8 @@ path.
 }
 ```
 
-Essentially navigating to `http://localhost:5173/about` should take you to an about page(though we haven't created that
+Essentially navigating to `http://localhost:5173/about` should take you to an about page(though we haven't created
+that
 yet).
 
 ### Output
@@ -234,7 +335,7 @@ Now changelog will become a dropdown menu with the respective links you pass ins
 
 ### Output
 
-![dropdown-menu](./Clipchamp.mp4)
+![dropdown-menu](http://localhost:5173/about)
 
 ## Social Icons
 
@@ -372,7 +473,7 @@ Of course, images are not left out.
 
 ### Output
 
-![page-routing](./Export_to_CSV.gif)
+![page-routing](asset/Export_to_CSV.gif)
 
 Great! You've set-up the docs, added a navigation menu with dropdown feature, added a sidebar, and customized the links
 to navigate to different pages. Next up, let's work on the home page.

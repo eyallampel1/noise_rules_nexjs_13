@@ -46,36 +46,35 @@ export default defineConfig({
         // Sidebar
         sidebar: [
             {
-                text: "Section A",
-                collapsible: true,
+                base: "Section A",
+
                 items: [
                     {text: "Introduction", link: "/guide.html#step-1-create-a-new-project"},
                     {text: "Getting Started", link: "/getting-started"},
                 ],
             },
             {
-                text: "Section B",
-                collapsible: false,
+                base: "Section B",
+
                 items: [
                     {text: "Introduction", link: "/introduction"},
                     {text: "Getting Started", link: "/getting-started"},
                 ],
             },
             {
-                text: "Section C",
-                collapsible: true,
+                base: "Section C",
+
                 items: [
                     {text: "Introduction", link: "/introduction"},
                     {text: "Getting Started", link: "/getting-started"},
                 ],
             },
         ],
+
+
         footer: {
             copyright: "Copyright © Eyal Lampel 2023- Noise Rules App",
         },
-        markdown: {
-            theme: "material-palenight",
-            lineNumbers: true,
-        },
+
     },
 })
