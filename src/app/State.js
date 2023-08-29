@@ -8,6 +8,7 @@ export const State = observable({
     profile: {
       name: "LAMPEL",
       ip: "localhost",
+      loadedtable: false,
     },
   },
   noiseData: {

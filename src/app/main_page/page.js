@@ -20,6 +20,9 @@ const Main_page = () => {
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const [userProvidedPath, setUserProvidedPath] = useState("");
   const [tableVisible, setTableVisible] = useState(false);
+  const [tableLoaded, setLoadedTable] = useState(
+    State.profile.loadedTable.get(),
+  );
   const cleanResponse = (response) => {
     return response.filter((row) => {
       // Check for rows with all null or empty properties
@@ -122,6 +125,8 @@ const Main_page = () => {
         alert("Incorrect table txt format. Please upload a valid table.");
         return;
       }
+      State.profile.loadedTable.set(true);
+      setLoadedTable(true);
 
       let newTableData = lines.slice(1).map((line) => {
         const [constraintClassName, inClassNoiseRule, outOfClassNoiseRule] =
@@ -215,30 +220,44 @@ const Main_page = () => {
         </div>
 
         <div className="flex justify-center items-center space-x-4 container mb-10 mt-3">
-          <input
-            type="file"
-            id="loadTable"
-            style={{ display: "none" }}
-            onChange={loadTableDataFromFile}
-            accept=".txt"
-          />
-          <label htmlFor="loadTable">
-            <Button variant="contained" component="span">
-              Load .txt Table
+          <div className="border-2 border-black border-dashed p-4 rounded-md">
+            <h2 className="text-center">
+              2. To continue your work / save the table for later editing click
+              here:
+            </h2>{" "}
+            {/* Updated styling */} {/* This is the added div */}
+            <input
+              type="file"
+              id="loadTable"
+              style={{ display: "none" }}
+              onChange={loadTableDataFromFile}
+              accept=".txt"
+            />
+            <label htmlFor="loadTable" className="mr-2">
+              <Button variant="contained" component="span">
+                Load .txt Table
+              </Button>
+            </label>
+            <Button variant="contained" onClick={saveTableDataAsTextFile}>
+              Save Table
             </Button>
-          </label>
-          <Button variant="contained" onClick={saveTableDataAsTextFile}>
-            Save Table
-          </Button>
-          <Button variant="contained" onClick={() => setIsDialogOpen(true)}>
-            Send To CES
-          </Button>
+          </div>
         </div>
-
-        <FileUploader
-          onTableDataChange={handleTableData}
-          tableData={tableData}
-        />
+        <div
+          className={` ${
+            tableLoaded
+              ? ""
+              : "border-2 border-black border-dashed p-4 rounded-md flex justify-center items-center space-x-4 container mt-10"
+          }`}
+        >
+          <h2 className="text-center">
+            1. To start a new project first upload the .csv file here:
+          </h2>
+          <FileUploader
+            onTableDataChange={handleTableData}
+            tableData={tableData}
+          />
+        </div>
 
         <div className="flex justify-center items-center space-x-4 container mt-10 ">
           {/* ... other buttons ... */}
@@ -269,6 +288,13 @@ const Main_page = () => {
               </Button>
             </DialogActions>
           </Dialog>
+        </div>
+        <div className="flex justify-center items-center space-x-4 container mt-10 ">
+          {tableLoaded && (
+            <Button variant="contained" onClick={() => setIsDialogOpen(true)}>
+              Send To CES
+            </Button>
+          )}
         </div>
       </div>
     </>
