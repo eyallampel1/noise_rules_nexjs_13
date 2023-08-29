@@ -3,7 +3,7 @@ import FileSaver from "file-saver";
 import Button from "@mui/material/Button";
 import FileUploader from "@/app/components/BrowseAndSend/BrowseAndSend";
 import withAuth from "../components/withAuth/withAuth";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { State } from "../State";
 import axios from "axios";
@@ -20,6 +20,7 @@ const Main_page = () => {
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const [userProvidedPath, setUserProvidedPath] = useState("");
   const [tableVisible, setTableVisible] = useState(false);
+  const [buttonColor, setButtonColor] = useState("blue");
   const [tableLoaded, setLoadedTable] = useState(
     State.profile.loadedTable.get(),
   );
@@ -45,6 +46,16 @@ const Main_page = () => {
   const handleUserProvidedPathChange = (event) => {
     setUserProvidedPath(event.target.value);
   };
+
+  useEffect(() => {
+    // Initialize an interval to change the button color every 2 seconds
+    const interval = setInterval(() => {
+      setButtonColor((prevColor) => (prevColor === "blue" ? "red" : "blue"));
+    }, 500);
+
+    // Cleanup the interval when the component is unmounted
+    return () => clearInterval(interval);
+  }, []);
 
   const handleSendToCES = () => {
     // Check if the input is empty
@@ -218,7 +229,6 @@ const Main_page = () => {
             Noise Rules DB
           </Button>
         </div>
-
         <div className="flex justify-center items-center space-x-4 container mb-10 mt-3">
           <div className="border-2 border-black border-dashed p-4 rounded-md">
             <h2 className="text-center">
@@ -247,7 +257,7 @@ const Main_page = () => {
           className={` ${
             tableLoaded
               ? ""
-              : "border-2 border-black border-dashed p-4 rounded-md flex justify-center items-center space-x-4 container mt-10"
+              : "border-2 border-black border-dashed p-4 rounded-md flex justify-center items-center space-x-4 container mt-5"
           }`}
         >
           <h2 className="text-center">
@@ -258,8 +268,7 @@ const Main_page = () => {
             tableData={tableData}
           />
         </div>
-
-        <div className="flex justify-center items-center space-x-4 container mt-10 ">
+        <div className="flex justify-center items-center space-x-4 container  ">
           {/* ... other buttons ... */}
 
           <Dialog open={isDialogOpen} onClose={() => setIsDialogOpen(false)}>
@@ -289,10 +298,19 @@ const Main_page = () => {
             </DialogActions>
           </Dialog>
         </div>
-        <div className="flex justify-center items-center space-x-4 container mt-10 ">
+        <div className="flex justify-center items-center space-x-4 container mt-5 ">
           {tableLoaded && (
-            <Button variant="contained" onClick={() => setIsDialogOpen(true)}>
-              Send To CES
+            <Button
+              variant="contained"
+              onClick={() => setIsDialogOpen(true)}
+              style={{
+                fontSize: "20px", // Increase font size
+                padding: "15px 40px", // Increase padding for a larger button
+                background: buttonColor, // Change background color to blue (or any other color you prefer)
+                color: "white", // Change text color to white for contrast
+              }}
+            >
+              Send Table to Server
             </Button>
           )}
         </div>
