@@ -215,105 +215,113 @@ const Main_page = () => {
 
   return (
     <>
-      <div>
-        <h1>main page</h1>
-        <div className="flex justify-center items-center space-x-20 container mb-10">
+      <div className="bg-gray-100 min-h-screen flex flex-col items-center p-8">
+        <h1 className="text-4xl font-bold text-blue-700 mb-10">Main Page</h1>
+
+        {/* Button Section 1 */}
+        <div className="mb-10">
           <Button
             variant="contained"
             onClick={() => {
               State.noiseData.noiseRules.set(tableData);
               router.push("/noise_rules_db");
             }}
-            color="secondary"
+            className="bg-blue-600 text-white py-2 px-4 rounded"
           >
             Noise Rules DB
           </Button>
         </div>
-        <div className="flex justify-center items-center space-x-4 container mb-10 mt-3">
-          <div className="border-2 border-black border-dashed p-4 rounded-md">
-            <h2 className="text-center">
-              2. To continue your work / save the table for later editing click
-              here:
-            </h2>{" "}
-            {/* Updated styling */} {/* This is the added div */}
+
+        {/* File Operations Section */}
+        <div className="bg-white shadow-md rounded-md p-6 mb-10 w-full max-w-xl border-2 border-dashed border-black">
+          <h2 className="text-center text-xl mb-4">
+            2. Continue your work or save the table for later editing:
+          </h2>
+
+          <div className="flex items-center justify-between">
             <input
               type="file"
               id="loadTable"
-              style={{ display: "none" }}
+              className="hidden"
               onChange={loadTableDataFromFile}
               accept=".txt"
             />
-            <label htmlFor="loadTable" className="mr-2">
-              <Button variant="contained" component="span">
+            <label htmlFor="loadTable">
+              <Button variant="contained" component="span" className="mr-4">
                 Load .txt Table
               </Button>
             </label>
-            <Button variant="contained" onClick={saveTableDataAsTextFile}>
+            <Button
+              variant="contained"
+              onClick={saveTableDataAsTextFile}
+              className="bg-green-500 text-white py-2 px-4 rounded"
+            >
               Save Table
             </Button>
           </div>
         </div>
+
+        {/* File Uploader Section */}
         <div
-          className={` ${
-            tableLoaded
-              ? ""
-              : "border-2 border-black border-dashed p-4 rounded-md flex justify-center items-center space-x-4 container mt-5"
+          className={`bg-white shadow-md rounded-md p-6 mb-10 w-full max-w-xl ${
+            !tableLoaded && "border-2 border-dashed border-black"
           }`}
         >
-          <h2 className="text-center">
-            1. To start a new project first upload the .csv file here:
+          <h2 className="text-center text-xl mb-4">
+            1. Start a new project by uploading a .csv file:
           </h2>
           <FileUploader
             onTableDataChange={handleTableData}
             tableData={tableData}
           />
         </div>
-        <div className="flex justify-center items-center space-x-4 container  ">
-          {/* ... other buttons ... */}
 
-          <Dialog open={isDialogOpen} onClose={() => setIsDialogOpen(false)}>
-            <DialogTitle>Enter Project Path</DialogTitle>
-            <DialogContent>
-              <DialogContentText>
-                Please enter the full path to the project file (.prj):
-              </DialogContentText>
-              <TextField
-                autoFocus
-                margin="dense"
-                id="project-path"
-                label="Project Path"
-                type="text"
-                fullWidth
-                value={userProvidedPath}
-                onChange={handleUserProvidedPathChange}
-              />
-            </DialogContent>
-            <DialogActions>
-              <Button onClick={() => setIsDialogOpen(false)} color="primary">
-                Cancel
-              </Button>
-              <Button onClick={handleSendToCES} color="primary">
-                Send
-              </Button>
-            </DialogActions>
-          </Dialog>
-        </div>
-        <div className="flex justify-center items-center space-x-4 container mt-5 ">
-          {tableLoaded && (
+        {/* Send Table Button */}
+        {tableLoaded && (
+          <div className="mb-10">
             <Button
               variant="contained"
               onClick={() => setIsDialogOpen(true)}
-              style={{
-                fontSize: "20px", // Increase font size
-                padding: "15px 40px", // Increase padding for a larger button
-                background: buttonColor, // Change background color to blue (or any other color you prefer)
-                color: "white", // Change text color to white for contrast
-              }}
+              className="text-white bg-indigo-500 hover:bg-indigo-600 py-2 px-4 rounded text-xl"
             >
               Send Table to Server
             </Button>
-          )}
-        </div>
+          </div>
+        )}
+
+        {/* Dialog Section */}
+        <Dialog open={isDialogOpen} onClose={() => setIsDialogOpen(false)}>
+          <DialogTitle>Enter Project Path</DialogTitle>
+          <DialogContent>
+            <DialogContentText>
+              Please enter the full path to the project file (.prj):
+            </DialogContentText>
+            <TextField
+              autoFocus
+              margin="dense"
+              id="project-path"
+              label="Project Path"
+              type="text"
+              fullWidth
+              value={userProvidedPath}
+              onChange={handleUserProvidedPathChange}
+            />
+          </DialogContent>
+          <DialogActions>
+            <Button
+              onClick={() => setIsDialogOpen(false)}
+              className="text-blue-500"
+            >
+              Cancel
+            </Button>
+            <Button
+              onClick={handleSendToCES}
+              className="bg-blue-500 text-white py-2 px-4 rounded"
+            >
+              Send
+            </Button>
+          </DialogActions>
+        </Dialog>
       </div>
     </>
   );
