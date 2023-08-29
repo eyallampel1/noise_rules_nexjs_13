@@ -14,12 +14,25 @@ import DialogContent from "@mui/material/DialogContent";
 import DialogContentText from "@mui/material/DialogContentText";
 import DialogTitle from "@mui/material/DialogTitle";
 import TextField from "@mui/material/TextField";
+import TableContainer from "@mui/material/TableContainer";
+import {
+  Autocomplete,
+  Paper,
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableRow,
+  Tooltip,
+} from "@mui/material";
+import Typography from "@mui/material/Typography";
 
 const Main_page = () => {
   const [tableData, setTableData] = useState(State.noiseData.noiseRules.get());
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const [userProvidedPath, setUserProvidedPath] = useState("");
   const [tableVisible, setTableVisible] = useState(false);
+  const [tooltipContent, setTooltipContent] = useState("");
   const [buttonColor, setButtonColor] = useState("blue");
   const [tableLoaded, setLoadedTable] = useState(
     State.profile.loadedTable.get(),
@@ -43,6 +56,15 @@ const Main_page = () => {
     });
   };
 
+  const handleTooltipContent = (event, option) => {
+    if (option) {
+      const rule = parallelismRules.find((rule) => rule.name === option.label);
+      setTooltipContent(rule ? rule.description : "");
+    } else {
+      setTooltipContent("");
+    }
+  };
+
   const handleUserProvidedPathChange = (event) => {
     setUserProvidedPath(event.target.value);
   };
@@ -51,7 +73,7 @@ const Main_page = () => {
     // Initialize an interval to change the button color every 2 seconds
     const interval = setInterval(() => {
       setButtonColor((prevColor) => (prevColor === "blue" ? "red" : "blue"));
-    }, 500);
+    }, 400);
 
     // Cleanup the interval when the component is unmounted
     return () => clearInterval(interval);
@@ -105,6 +127,10 @@ const Main_page = () => {
       });
   };
 
+  const options = parallelismRules.map((rule) => ({
+    label: rule.name,
+  }));
+
   const handleTableData = (data) => {
     setTableData(data);
   };
@@ -157,6 +183,18 @@ const Main_page = () => {
 
     reader.readAsText(file);
     setTableVisible(true);
+  };
+
+  const handleInClassSelection = (index, value) => {
+    const updatedTableData = [...tableData];
+    updatedTableData[index].inClassNoiseRule = value ? value.label : null;
+    setTableData(updatedTableData);
+  };
+
+  const handleOutClassSelection = (index, value) => {
+    const updatedTableData = [...tableData];
+    updatedTableData[index].outOfClassNoiseRule = value ? value.label : null;
+    setTableData(updatedTableData);
   };
 
   const saveTableDataAsTextFile = () => {
@@ -216,7 +254,9 @@ const Main_page = () => {
   return (
     <>
       <div className="bg-gray-100 min-h-screen flex flex-col items-center p-8">
-        <h1 className="text-4xl font-bold text-blue-700 mb-10">Main Page</h1>
+        <h1 className="text-4xl font-bold text-blue-700 mb-10">
+          Noise Rule APP
+        </h1>
 
         {/* Button Section 1 */}
         <div className="mb-10">
@@ -232,8 +272,20 @@ const Main_page = () => {
           </Button>
         </div>
 
+        {/* File Uploader Section */}
+        <div
+          className={`bg-white shadow-md rounded-md p-6 mb-10 w-full border-2 border-dashed border-black max-w-2xl ${
+            !tableLoaded && "border-2 border-dashed border-black"
+          }`}
+        >
+          <h2 className="text-center text-xl mb-4">
+            1. Start a new project by uploading a .csv file:
+          </h2>
+          <FileUploader onProcessedData={setTableData} />
+        </div>
+
         {/* File Operations Section */}
-        <div className="bg-white shadow-md rounded-md p-6 mb-10 w-full max-w-xl border-2 border-dashed border-black">
+        <div className="bg-white shadow-md rounded-md p-6 mb-10 w-full max-w-2xl border-2 border-dashed border-black">
           <h2 className="text-center text-xl mb-4">
             2. Continue your work or save the table for later editing:
           </h2>
@@ -261,33 +313,110 @@ const Main_page = () => {
           </div>
         </div>
 
-        {/* File Uploader Section */}
-        <div
-          className={`bg-white shadow-md rounded-md p-6 mb-10 w-full max-w-xl ${
-            !tableLoaded && "border-2 border-dashed border-black"
-          }`}
-        >
-          <h2 className="text-center text-xl mb-4">
-            1. Start a new project by uploading a .csv file:
-          </h2>
-          <FileUploader
-            onTableDataChange={handleTableData}
-            tableData={tableData}
-          />
-        </div>
+        {/* Table Rendering Section */}
+        {tableData.length > 0 && (
+          <div className={"w-full mb-5"}>
+            <h2>Server Response:</h2>
+            <TableContainer
+              component={Paper}
+              style={{ height: "800px", overflow: "auto" }}
+            >
+              <Table stickyHeader aria-label="simple table">
+                <TableHead>
+                  <TableRow>
+                    <TableCell sx={{ backgroundColor: "#27E537" }}>
+                      <Typography variant="h6">Constraint Class</Typography>
+                    </TableCell>
+                    <TableCell sx={{ backgroundColor: "#27E537" }}>
+                      <Typography variant="h6">In class Noise Rule</Typography>
+                    </TableCell>
+                    <TableCell sx={{ backgroundColor: "#27E537" }}>
+                      <Typography variant="h6">
+                        Out of Class Noise Rule
+                      </Typography>
+                    </TableCell>
+                  </TableRow>
+                </TableHead>
+                <TableBody>
+                  {tableData.map((row, index) => (
+                    <TableRow key={index}>
+                      <TableCell>{row.constraintClassName}</TableCell>
+                      <TableCell>
+                        <Tooltip title={tooltipContent}>
+                          <Autocomplete
+                            freeSolo={true}
+                            clearOnBlur={true}
+                            value={
+                              options.find(
+                                (option) =>
+                                  option.label ===
+                                  tableData[index].inClassNoiseRule,
+                              ) || null
+                            }
+                            onChange={(_, value) =>
+                              handleInClassSelection(index, value)
+                            }
+                            onHighlightChange={handleTooltipContent}
+                            disablePortal
+                            id={`autocomplete-in-class-${index}`}
+                            options={options}
+                            getOptionLabel={(option) => option.label}
+                            renderInput={(params) => (
+                              <TextField {...params} label="InClass Rule" />
+                            )}
+                          />
+                        </Tooltip>
+                      </TableCell>
+                      <TableCell>
+                        <Tooltip title={tooltipContent}>
+                          <Autocomplete
+                            value={
+                              options.find(
+                                (option) =>
+                                  option.label ===
+                                  tableData[index].outOfClassNoiseRule,
+                              ) || null
+                            }
+                            onChange={(_, value) =>
+                              handleOutClassSelection(index, value)
+                            }
+                            onHighlightChange={handleTooltipContent}
+                            disablePortal
+                            id={`autocomplete-out-class-${index}`}
+                            options={options}
+                            getOptionLabel={(option) => option.label}
+                            renderInput={(params) => (
+                              <TextField {...params} label="OutClass Rule" />
+                            )}
+                          />
+                        </Tooltip>
+                      </TableCell>
+                    </TableRow>
+                  ))}
+                </TableBody>
+              </Table>
+            </TableContainer>
+          </div>
+        )}
 
         {/* Send Table Button */}
         {tableLoaded && (
-          <div className="mb-10">
-            <Button
-              variant="contained"
-              onClick={() => setIsDialogOpen(true)}
-              className="text-white bg-indigo-500 hover:bg-indigo-600 py-2 px-4 rounded text-xl"
-            >
-              Send Table to Server
-            </Button>
-          </div>
+          <Button
+            variant="contained"
+            onClick={() => setIsDialogOpen(true)}
+            style={{
+              fontSize: "20px", // Increase font size
+              padding: "15px 40px", // Increase padding for a larger button
+              background: buttonColor, // Change background color to blue (or any other color you prefer)
+              color: "white", // Change text color to white for contrast
+            }}
+          >
+            Send Table To Server
+          </Button>
         )}
+
+        {/* Dialog Section */}
+        {/* ... Your Dialog code ... */}
 
         {/* Dialog Section */}
         <Dialog open={isDialogOpen} onClose={() => setIsDialogOpen(false)}>
