@@ -4,7 +4,7 @@ import Button from "@mui/material/Button";
 import { Input } from "@mui/material";
 import { State } from "@/app/State";
 
-function FileUpload({ onProcessedData }) {
+function FileUpload({ onProcessedData, setLoadedTable }) {
   const [file, setFile] = useState(null);
 
   const cleanResponse = (response) => {
@@ -42,6 +42,7 @@ function FileUpload({ onProcessedData }) {
         .then((response) => {
           const cleanedResponse = cleanResponse(response.data.result);
           onProcessedData(cleanedResponse);
+          setLoadedTable(true);
         })
         .catch((error) => console.log(error));
     } else {

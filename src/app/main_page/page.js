@@ -1,4 +1,7 @@
 "use client";
+import CircularProgress from "@mui/material/CircularProgress";
+import Box from "@mui/material/Box";
+import { LinearProgress } from "@mui/material";
 import FileSaver from "file-saver";
 import Button from "@mui/material/Button";
 import FileUploader from "@/app/components/BrowseAndSend/BrowseAndSend";
@@ -26,12 +29,15 @@ import {
   Tooltip,
 } from "@mui/material";
 import Typography from "@mui/material/Typography";
+import Grid from "@mui/material/Grid";
 
 const Main_page = () => {
+  const [, forceRender] = useState();
   const [tableData, setTableData] = useState(State.noiseData.noiseRules.get());
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const [userProvidedPath, setUserProvidedPath] = useState("");
   const [tableVisible, setTableVisible] = useState(false);
+  const [filledRowsCount, setFilledRowsCount] = useState(0);
   const [tooltipContent, setTooltipContent] = useState("");
   const [buttonColor, setButtonColor] = useState("blue");
   const [tableLoaded, setLoadedTable] = useState(
@@ -135,6 +141,13 @@ const Main_page = () => {
     setTableData(data);
   };
 
+  const updateFilledRowsCount = () => {
+    let count = tableData.filter(
+      (row) => row.inClassNoiseRule && row.outOfClassNoiseRule,
+    ).length;
+    setFilledRowsCount(count);
+  };
+
   const loadTableDataFromFile = (event) => {
     const file = event.target.files[0];
 
@@ -185,16 +198,29 @@ const Main_page = () => {
     setTableVisible(true);
   };
 
+  // This is the handler function for the "Let Me Guess" button
+  const handleGuess = () => {
+    const guessedData = tableData.map((row) => ({
+      ...row,
+      inClassNoiseRule: "GBE_ANALOG_IN",
+      outOfClassNoiseRule: "GBE_ANALOG_OUT",
+    }));
+
+    setTableData(guessedData);
+  };
+
   const handleInClassSelection = (index, value) => {
     const updatedTableData = [...tableData];
     updatedTableData[index].inClassNoiseRule = value ? value.label : null;
     setTableData(updatedTableData);
+    updateFilledRowsCount();
   };
 
   const handleOutClassSelection = (index, value) => {
     const updatedTableData = [...tableData];
     updatedTableData[index].outOfClassNoiseRule = value ? value.label : null;
     setTableData(updatedTableData);
+    updateFilledRowsCount();
   };
 
   const saveTableDataAsTextFile = () => {
@@ -281,7 +307,11 @@ const Main_page = () => {
           <h2 className="text-center text-xl mb-4">
             1. Start a new project by uploading a .csv file:
           </h2>
-          <FileUploader onProcessedData={setTableData} />
+
+          <FileUploader
+            onProcessedData={setTableData}
+            setLoadedTable={setLoadedTable}
+          />
         </div>
 
         {/* File Operations Section */}
@@ -312,7 +342,24 @@ const Main_page = () => {
             </Button>
           </div>
         </div>
-
+        {tableLoaded && (
+          <div>
+            <Box sx={{ display: "flex" }}>
+              <CircularProgress
+                variant="determinate"
+                value={(filledRowsCount / tableData.length) * 100}
+              />
+            </Box>
+            {tableLoaded && (
+              <div>Rows left: {tableData.length - filledRowsCount}</div>
+            )}
+          </div>
+        )}
+        {tableLoaded && (
+          <Button variant="contained" onClick={handleGuess}>
+            Let Me Guess
+          </Button>
+        )}
         {/* Table Rendering Section */}
         {tableData.length > 0 && (
           <div className={"w-full mb-5"}>
