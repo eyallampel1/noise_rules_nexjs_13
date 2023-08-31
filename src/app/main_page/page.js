@@ -200,11 +200,26 @@ const Main_page = () => {
 
   // This is the handler function for the "Let Me Guess" button
   const handleGuess = () => {
-    const guessedData = tableData.map((row) => ({
-      ...row,
-      inClassNoiseRule: "GBE_ANALOG_IN",
-      outOfClassNoiseRule: "GBE_ANALOG_OUT",
-    }));
+    const guessedData = tableData.map((row) => {
+      let inClassValue;
+
+      if (
+        row.inClassNoiseRule.includes("MGT") ||
+        row.inClassNoiseRule.includes("mgt")
+      ) {
+        inClassValue = "MGT_IN";
+      } else if (row.inClassNoiseRule.includes("NOT_CRITICAL")) {
+        inClassValue = "NONE";
+      } else {
+        inClassValue = "GBE_ANALOG_IN";
+      }
+
+      return {
+        ...row,
+        inClassNoiseRule: inClassValue,
+        outOfClassNoiseRule: "GBE_ANALOG_OUT",
+      };
+    });
 
     setTableData(guessedData);
   };
