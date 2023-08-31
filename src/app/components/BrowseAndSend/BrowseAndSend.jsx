@@ -42,6 +42,7 @@ function FileUpload({ onProcessedData, setLoadedTable }) {
         .then((response) => {
           const cleanedResponse = cleanResponse(response.data.result);
           onProcessedData(cleanedResponse);
+          State.profile.loadedTable.set(true);
           setLoadedTable(true);
         })
         .catch((error) => console.log(error));

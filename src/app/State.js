@@ -9,6 +9,7 @@ export const State = observable({
       name: "LAMPEL",
       ip: "localhost",
       loadedtable: false,
+      tablevisible: false,
     },
   },
   noiseData: {

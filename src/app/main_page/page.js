@@ -1,4 +1,7 @@
 "use client";
+
+import { ProgressBar } from "primereact/progressbar";
+
 import CircularProgress from "@mui/material/CircularProgress";
 import Box from "@mui/material/Box";
 import { LinearProgress } from "@mui/material";
@@ -32,8 +35,8 @@ import Typography from "@mui/material/Typography";
 import Grid from "@mui/material/Grid";
 
 const Main_page = () => {
-  const [, forceRender] = useState();
   const [tableData, setTableData] = useState(State.noiseData.noiseRules.get());
+  const [totalRows, setTotalRows] = useState(0);
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const [userProvidedPath, setUserProvidedPath] = useState("");
   const [tableVisible, setTableVisible] = useState(false);
@@ -84,6 +87,16 @@ const Main_page = () => {
     // Cleanup the interval when the component is unmounted
     return () => clearInterval(interval);
   }, []);
+
+  useEffect(() => {
+    updateFilledRowsCount();
+  }, [tableData]);
+
+  useEffect(() => {
+    // Initial setup of filledRowsCount and totalRows when component mounts
+    setTotalRows(tableData.length);
+    updateFilledRowsCount();
+  }, []); // Note the empty dependency array, meaning this effect runs once upon mount.
 
   const handleSendToCES = () => {
     // Check if the input is empty
@@ -139,12 +152,15 @@ const Main_page = () => {
 
   const handleTableData = (data) => {
     setTableData(data);
+    updateFilledRowsCount();
+    setTotalRows(data.length);
   };
 
   const updateFilledRowsCount = () => {
     let count = tableData.filter(
       (row) => row.inClassNoiseRule && row.outOfClassNoiseRule,
     ).length;
+    console.log("Update filled rows count:", count); // Debugging line
     setFilledRowsCount(count);
   };
 
@@ -192,6 +208,9 @@ const Main_page = () => {
       // Set the table data in Legend State
       State.noiseData.noiseRules.set(newTableData);
       setTableData(newTableData); // You may still want to keep this if you're using tableData elsewhere in this component
+
+      // Update the filled rows count
+      updateFilledRowsCount();
     };
 
     reader.readAsText(file);
@@ -357,6 +376,7 @@ const Main_page = () => {
             </Button>
           </div>
         </div>
+
         {tableLoaded && (
           <div>
             <Box sx={{ display: "flex" }}>
@@ -366,7 +386,15 @@ const Main_page = () => {
               />
             </Box>
             {tableLoaded && (
-              <div>Rows left: {tableData.length - filledRowsCount}</div>
+              <div>
+                {filledRowsCount === totalRows ? (
+                  <span style={{ color: "green", fontWeight: "bold" }}>
+                    FINISHED!
+                  </span>
+                ) : (
+                  `Rows left: ${totalRows - filledRowsCount}`
+                )}
+              </div>
             )}
           </div>
         )}
