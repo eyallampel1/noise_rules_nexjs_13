@@ -10,6 +10,19 @@ module.exports = {
   ],
   theme: {
     extend: {
+      animation: {
+        'spin-slow': 'spin 8s linear infinite',
+      },
+      keyframes: {
+        scaleUp: {
+          '0%': {transform: 'scale(1)'},
+          '50%': {transform: 'scale(1.5)'},
+          '100%': {transform: 'scale(1)'}
+        },
+        fall: {
+          '100%': {transform: 'translateY(110vh)'}
+        }
+      },
       backgroundImage: {
         "gradient-radial": "radial-gradient(var(--tw-gradient-stops))",
         "gradient-conic":

@@ -42,6 +42,7 @@ const Main_page = () => {
   const [tableVisible, setTableVisible] = useState(false);
   const [filledRowsCount, setFilledRowsCount] = useState(0);
   const [tooltipContent, setTooltipContent] = useState("");
+  const [requestStatus, setRequestStatus] = useState("idle"); // values: 'idle', 'success', 'error'
   const [buttonColor, setButtonColor] = useState("blue");
   const [tableLoaded, setLoadedTable] = useState(
     State.profile.loadedTable.get(),
@@ -79,14 +80,19 @@ const Main_page = () => {
   };
 
   useEffect(() => {
-    // Initialize an interval to change the button color every 2 seconds
     const interval = setInterval(() => {
-      setButtonColor((prevColor) => (prevColor === "blue" ? "red" : "blue"));
+      if (requestStatus === "idle") {
+        setButtonColor((prevColor) => (prevColor === "blue" ? "red" : "blue"));
+      } else if (requestStatus === "success") {
+        setButtonColor("green");
+      } else if (requestStatus === "error") {
+        setButtonColor("red");
+      }
     }, 400);
 
-    // Cleanup the interval when the component is unmounted
     return () => clearInterval(interval);
-  }, []);
+  }, [requestStatus]);
+
 
   useEffect(() => {
     updateFilledRowsCount();
@@ -140,9 +146,13 @@ const Main_page = () => {
         link.setAttribute("download", `file_${timestampStr}.zip`); // or any other extension
         document.body.appendChild(link);
         link.click();
+        setRequestStatus("success");
+        setButtonColor("green"); // set the button color to green
       })
       .catch((error) => {
         console.error(error);
+        setRequestStatus("error");
+        setButtonColor("red"); // set the button color to red on error
       });
   };
 
@@ -244,6 +254,27 @@ const Main_page = () => {
     setTableData(updatedTableData);
     updateFilledRowsCount();
   };
+
+  const Confetti = () => {
+    const colors = ["bg-red-500", "bg-blue-500", "bg-yellow-500", "bg-green-500", "bg-pink-500", "bg-purple-500"];
+    return (
+        <div className="relative w-full h-20 overflow-hidden">
+          {Array(100)
+              .fill(0)
+              .map((_, i) => (
+                  <div
+                      key={i}
+                      className={`${colors[Math.floor(Math.random() * colors.length)]} absolute top-0 w-1 h-4 animate-fall rotate-[${Math.random() * 360}deg]`}
+                      style={{
+                        left: `${Math.random() * 100}vw`
+                      }}
+                  />
+              ))}
+        </div>
+    );
+  };
+
+
 
   const saveTableDataAsTextFile = () => {
     // if (!tableVisible) {
@@ -376,9 +407,17 @@ const Main_page = () => {
             {tableLoaded && (
               <div>
                 {filledRowsCount === totalRows ? (
-                  <span style={{ color: "green", fontWeight: "bold" }}>
-                    FINISHED!
-                  </span>
+                    <div className="relative text-center my-6">
+                      <div className="absolute top-0 left-1/2 transform -translate-x-1/2">
+                        <span className="text-green-500 font-bold text-3xl animate-spin-slow">&#9733;</span>
+                      </div>
+                      <span className="text-green-500 font-bold z-10 relative">FINISHED!</span>
+                      <div className="absolute bottom-0 left-1/2 transform -translate-x-1/2">
+                        <span className="text-green-500 font-bold text-3xl animate-spin-slow">&#9733;</span>
+                      </div>
+                    </div>
+
+
                 ) : (
                   `Rows left: ${totalRows - filledRowsCount}`
                 )}
@@ -483,6 +522,7 @@ const Main_page = () => {
             variant="contained"
             onClick={() => setIsDialogOpen(true)}
             style={{
+              backgroundColor: buttonColor, // Change background color to blue (or any other color you prefer)
               fontSize: "20px", // Increase font size
               padding: "15px 40px", // Increase padding for a larger button
               background: buttonColor, // Change background color to blue (or any other color you prefer)
