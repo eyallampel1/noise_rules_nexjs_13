@@ -1,7 +1,7 @@
 "use client";
 
 import { ProgressBar } from "primereact/progressbar";
-
+import { handleGuess } from './HandleGuess.js';
 import CircularProgress from "@mui/material/CircularProgress";
 import Box from "@mui/material/Box";
 import { LinearProgress } from "@mui/material";
@@ -217,38 +217,26 @@ const Main_page = () => {
     setTableVisible(true);
   };
 
-  // This is the handler function for the "Let Me Guess" button
-  const handleGuess = () => {
-    const guessedData = tableData.map((row) => {
-      let inClassValue;
-
-      if (
-        row.inClassNoiseRule.includes("MGT") ||
-        row.inClassNoiseRule.includes("mgt")
-      ) {
-        inClassValue = "MGT_IN";
-      } else if (row.inClassNoiseRule.includes("NOT_CRITICAL")) {
-        inClassValue = "NONE";
-      } else {
-        inClassValue = "GBE_ANALOG_IN";
-      }
-
-      return {
-        ...row,
-        inClassNoiseRule: inClassValue,
-        outOfClassNoiseRule: "GBE_ANALOG_OUT",
-      };
-    });
-
+  //calling another file
+  const onClickHandleGuess = () => {
+    const guessedData = handleGuess(tableData);
     setTableData(guessedData);
   };
 
+
   const handleInClassSelection = (index, value) => {
     const updatedTableData = [...tableData];
+
+    // // If a deletion occurred in the input, don't autocomplete
+    // if (value && value.label.length < (tableData[index].inClassNoiseRule || '').length) {
+    //   return;
+    // }
+
     updatedTableData[index].inClassNoiseRule = value ? value.label : null;
     setTableData(updatedTableData);
     updateFilledRowsCount();
   };
+
 
   const handleOutClassSelection = (index, value) => {
     const updatedTableData = [...tableData];
@@ -370,7 +358,7 @@ const Main_page = () => {
             <Button
               variant="contained"
               onClick={saveTableDataAsTextFile}
-              className="bg-green-500 text-white py-2 px-4 rounded"
+              className=" text-white py-2 px-4 rounded"
             >
               Save Table
             </Button>
@@ -399,7 +387,7 @@ const Main_page = () => {
           </div>
         )}
         {tableLoaded && (
-          <Button variant="contained" onClick={handleGuess}>
+          <Button variant="contained" onClick={onClickHandleGuess }>
             Let Me Guess
           </Button>
         )}

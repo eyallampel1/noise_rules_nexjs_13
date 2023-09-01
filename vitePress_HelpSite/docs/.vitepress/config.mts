@@ -5,8 +5,9 @@ import {defineConfig} from 'vitepress'
 export default defineConfig({
     title: "Noise Rule App Help Site",
     description: "An awesome docs template built by me",
-
+    appearance: 'dark',
     themeConfig: {
+
         search: {
             provider: "local",
         },
