@@ -40,6 +40,7 @@ const Main_page = () => {
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const [userProvidedPath, setUserProvidedPath] = useState("");
   const [tableVisible, setTableVisible] = useState(false);
+  const [errorRows, setErrorRows] = useState([]);
   const [filledRowsCount, setFilledRowsCount] = useState(0);
   const [tooltipContent, setTooltipContent] = useState("");
   const [requestStatus, setRequestStatus] = useState("idle"); // values: 'idle', 'success', 'error'
@@ -99,6 +100,8 @@ const Main_page = () => {
   }, [tableData]);
 
   useEffect(() => {
+    State.noiseData.noiseRules.get();
+    State.noiseData.noiseRules.set(tableData);
     // Initial setup of filledRowsCount and totalRows when component mounts
     setTotalRows(tableData.length);
     updateFilledRowsCount();
@@ -228,14 +231,39 @@ const Main_page = () => {
     setTableVisible(true);
   };
 
+  const updateErrorRows = (index) => {
+    const currentRow = tableData[index];
+    const isRowFilled = currentRow.inClassNoiseRule && currentRow.outOfClassNoiseRule; // Assuming both fields should be filled
+
+    setErrorRows((prevErrorRows) => {
+      if (isRowFilled) {
+        return prevErrorRows.filter((rowIndex) => rowIndex !== index); // Remove row from error list
+      } else if (!prevErrorRows.includes(index)) {
+        return [...prevErrorRows, index]; // Add row to error list
+      } else {
+        return prevErrorRows; // Keep the list as-is
+      }
+    });
+  };
+
+
   //calling another file
   const onClickHandleGuess = () => {
-
+    State.noiseData.noiseRules.set(tableData);
     const guessedData = handleGuess(tableData);
+    const errorIndices = [];
 
+    guessedData.forEach((row, index) => {
+      if (!row.inClassNoiseRule || !row.outOfClassNoiseRule) {
+        errorIndices.push(index);
+      }
+    });
+
+    setErrorRows(errorIndices);
     setTableData(guessedData);
     State.noiseData.noiseRules.set(tableData);
   };
+
 
 
   const handleInClassSelection = (index, value) => {
@@ -250,6 +278,7 @@ const Main_page = () => {
     updatedTableData[index].inClassNoiseRule = value ? value.label : null;
     setTableData(updatedTableData);
     updateFilledRowsCount();
+    updateErrorRows(index);
     State.noiseData.noiseRules.set(tableData);
   };
 
@@ -260,6 +289,7 @@ const Main_page = () => {
     updatedTableData[index].outOfClassNoiseRule = value ? value.label : null;
     setTableData(updatedTableData);
     updateFilledRowsCount();
+    updateErrorRows(index);
     State.noiseData.noiseRules.set(tableData);
 
   };
@@ -412,7 +442,7 @@ const Main_page = () => {
                 <LinearProgress variant="determinate"  />
               </Box>
               <Box sx={{ minWidth: 35 }}>
-                <Typography variant="body2" color="text.secondary">{`${Math.round((filledRowsCount / totalRows) * 100)}%`}</Typography>
+                <Typography variant="h5" fontWeight="bold" color="text.secondary">{`${Math.round((filledRowsCount / totalRows) * 100)}%`}</Typography>
               </Box>
             </Box>
 
@@ -464,7 +494,7 @@ const Main_page = () => {
                 </TableHead>
                 <TableBody>
                   {tableData.map((row, index) => (
-                    <TableRow key={index}>
+                      <TableRow className={errorRows.includes(index) ? "bg-red-500" : ""}>
                       <TableCell>{row.constraintClassName}</TableCell>
                       <TableCell>
                         <Tooltip title={tooltipContent}>
