@@ -4,7 +4,7 @@ import { ProgressBar } from "primereact/progressbar";
 import { handleGuess } from './HandleGuess.js';
 import CircularProgress from "@mui/material/CircularProgress";
 import Box from "@mui/material/Box";
-import { LinearProgress } from "@mui/material";
+import LinearProgress from '@mui/material/LinearProgress';
 import FileSaver from "file-saver";
 import Button from "@mui/material/Button";
 import FileUploader from "@/app/components/BrowseAndSend/BrowseAndSend";
@@ -221,6 +221,7 @@ const Main_page = () => {
 
       // Update the filled rows count
       updateFilledRowsCount();
+      State.noiseData.noiseRules.set(tableData);
     };
 
     reader.readAsText(file);
@@ -229,12 +230,16 @@ const Main_page = () => {
 
   //calling another file
   const onClickHandleGuess = () => {
+
     const guessedData = handleGuess(tableData);
+
     setTableData(guessedData);
+    State.noiseData.noiseRules.set(tableData);
   };
 
 
   const handleInClassSelection = (index, value) => {
+    State.noiseData.noiseRules.set(tableData);
     const updatedTableData = [...tableData];
 
     // // If a deletion occurred in the input, don't autocomplete
@@ -245,14 +250,18 @@ const Main_page = () => {
     updatedTableData[index].inClassNoiseRule = value ? value.label : null;
     setTableData(updatedTableData);
     updateFilledRowsCount();
+    State.noiseData.noiseRules.set(tableData);
   };
 
 
   const handleOutClassSelection = (index, value) => {
+    State.noiseData.noiseRules.set(tableData);
     const updatedTableData = [...tableData];
     updatedTableData[index].outOfClassNoiseRule = value ? value.label : null;
     setTableData(updatedTableData);
     updateFilledRowsCount();
+    State.noiseData.noiseRules.set(tableData);
+
   };
 
   const Confetti = () => {
@@ -398,28 +407,27 @@ const Main_page = () => {
 
         {tableLoaded && (
           <div>
-            <Box sx={{ display: "flex" }}>
-              <CircularProgress
-                variant="determinate"
-                value={(filledRowsCount / tableData.length) * 100}
-              />
+            <Box sx={{ display: 'flex', alignItems: 'center' }}>
+              <Box sx={{ width: '100%', mr: 1,minWidth:500 }}>
+                <LinearProgress variant="determinate"  />
+              </Box>
+              <Box sx={{ minWidth: 35 }}>
+                <Typography variant="body2" color="text.secondary">{`${Math.round((filledRowsCount / totalRows) * 100)}%`}</Typography>
+              </Box>
             </Box>
+
+
             {tableLoaded && (
               <div>
                 {filledRowsCount === totalRows ? (
-                    <div className="relative text-center my-6">
-                      <div className="absolute top-0 left-1/2 transform -translate-x-1/2">
-                        <span className="text-green-500 font-bold text-3xl animate-spin-slow">&#9733;</span>
-                      </div>
-                      <span className="text-green-500 font-bold z-10 relative">FINISHED!</span>
-                      <div className="absolute bottom-0 left-1/2 transform -translate-x-1/2">
-                        <span className="text-green-500 font-bold text-3xl animate-spin-slow">&#9733;</span>
-                      </div>
+                    <div className="relative text-center">
+                      <span className="font-bold text-4xl text-red-500 font-bold animate-scale-up">FINISHED!</span>
+                      <Confetti />
                     </div>
-
-
                 ) : (
-                  `Rows left: ${totalRows - filledRowsCount}`
+                    <span className="font-bold text-4xl text-center">
+                      Rows left: {totalRows - filledRowsCount}
+        </span>
                 )}
               </div>
             )}
