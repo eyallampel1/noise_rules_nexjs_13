@@ -170,6 +170,8 @@ const Main_page = () => {
   };
 
   const updateFilledRowsCount = () => {
+    setTotalRows(tableData.length);
+    State.noiseData.noiseRules.set(tableData.length);
     let count = tableData.filter(
       (row) => row.inClassNoiseRule && row.outOfClassNoiseRule,
     ).length;
